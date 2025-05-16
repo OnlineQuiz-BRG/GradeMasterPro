@@ -4,7 +4,7 @@ body {
   text-align: center;
   margin: 0;
   padding: 0;
-  color: #333; /* default text color */
+  color: #333;
 }
 
 .container {
@@ -22,18 +22,20 @@ body {
   margin: 0 auto 20px auto;
 }
 
+/* Headings and Paragraphs */
 h1 {
   color: green;
 }
 
 h2 {
-  color: blue;
+  color: orange;
 }
 
 p {
-  color: darkslategray;
+  color: green;
 }
 
+/* Links */
 a {
   color: #0077cc;
   text-decoration: none;
