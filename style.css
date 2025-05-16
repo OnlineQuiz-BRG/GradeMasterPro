@@ -2,7 +2,15 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #ffe6b3, #ffffff);
+
+  /* background image with gradient overlay */
+  background: 
+    linear-gradient(rgba(255, 230, 179, 0.6), rgba(255, 255, 255, 0.6)),
+    url('images/NaturesClass.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
   display: flex;
   justify-content: center;
   align-items: center;
