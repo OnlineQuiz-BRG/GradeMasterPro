@@ -6,7 +6,7 @@ body {
   /* background image with gradient overlay */
   background: 
     linear-gradient(rgba(255, 230, 179, 0.6), rgba(255, 255, 255, 0.6)),
-    url('images/NaturesClass.png');
+    url('NaturesClass.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
