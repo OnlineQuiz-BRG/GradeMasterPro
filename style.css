@@ -1,68 +1,51 @@
-/* General background */
+/* Body & container styles */
 body {
-margin: 0;
-  font-family: Arial, sans-serif;
-  background:
-    linear-gradient(rgba(255, 230, 179, 0.3), rgba(255, 255, 255, 0.3)),
-    url('NaturesClass.png') no-repeat center center fixed;
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(rgba(255, 230, 179, 0.3), rgba(255, 255, 255, 0.3)),
+              url('NaturesClass.png') no-repeat center center fixed;
   background-size: cover;
-
   display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Align container to top */
-  min-height: 100vh;
-  padding-top: 50px; /* Adjust this to move container down a bit from top */
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Container */
+/* Main content wrapper */
 .container {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.85);
   padding: 40px 50px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  text-align: center;
-}
-.group-link {
-  color: blue;
-  font-weight: bold;
-  text-decoration: none;
-  font-size: 1.1em;
-  display: inline-block;
-  margin-top: 20px;
+  max-width: 900px;
+  margin: 40px 20px;
 }
 
-.group-link:hover {
-  text-decoration: underline;
-  color: darkblue;
-}
-
-/* Titles */
-.main-title {
-  color: green;
-  font-size: 2em;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  color: green;
-  font-size: 1.1em;
-}
-
-/* Group section */
-.groups-container {
+/* Cards section */
+.cards-section {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 30px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  margin-top: 40px;
 }
 
+/* Programme card style */
+.programme-card {
+  background-color: #ffe5b4;
+}
+
+/* Group A/B card style */
+.group-ab-card {
+  background-color: #ffe4e1;
+}
+
+/* Common card styling */
 .group-card {
-  background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 20px 30px;
-  width: 200px;
+  width: 250px;
   text-align: center;
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -72,6 +55,14 @@ margin: 0;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* Icons inside cards */
+.card-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+/* Titles and links */
 .group-title {
   color: orange;
   font-size: 1.5em;
@@ -87,4 +78,24 @@ margin: 0;
 
 .group-link:hover {
   text-decoration: underline;
+}
+
+/* Group A & B container row */
+.groups-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* Responsive cards */
+@media (max-width: 600px) {
+  .group-card {
+    width: 90%;
+  }
+
+  .groups-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
