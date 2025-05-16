@@ -1,15 +1,11 @@
 /* General background */
 body {
-  margin: 0;
+margin: 0;
   font-family: Arial, sans-serif;
-
-  /* background image with gradient overlay */
-  background: 
-    linear-gradient(rgba(255, 230, 179, 0.6), rgba(255, 255, 255, 0.2)),
-    url('NaturesClass.png');
-  background-repeat: no-repeat;
+  background:
+    linear-gradient(rgba(255, 230, 179, 0.3), rgba(255, 255, 255, 0.3)),
+    url('NaturesClass.png') no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
 
   display: flex;
   justify-content: center;
