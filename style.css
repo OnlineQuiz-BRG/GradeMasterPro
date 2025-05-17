@@ -127,7 +127,9 @@ body {
   }
   /* Left-justified paragraph style */
 .left-justified {
-  text-align: left;
+  text-align: left !important;
+}
+
 }
 
 }
