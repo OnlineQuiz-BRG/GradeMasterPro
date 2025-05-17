@@ -13,7 +13,7 @@ body {
 
 /* Main content wrapper */
 .container {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 40px 50px;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -22,114 +22,75 @@ body {
   text-align: center;
 }
 
-.main-title {
+/* Headings and section titles */
+h1 {
   font-size: 2.2em;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 1.2em;
-  color: #555;
+  color: #117a00;
   margin-bottom: 30px;
 }
 
-/* Cards section */
-.cards-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 30px;
+.section-title {
+  font-weight: bold;
+  margin-top: 25px;
+  margin-bottom: 12px;
+  font-size: 1.2em;
+  color: #0d6200;
+  text-align: left;
+}
+
+/* Points and emojis */
+.point {
+  margin: 5px 0;
+  font-size: 1em;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.emoji {
+  font-size: 1.1em;
+  margin-right: 5px;
+}
+
+/* Back button */
+.back-button {
   margin-top: 40px;
-}
-
-/* Programme card style */
-.programme-card {
-  background-color: #ffe5b4;
-}
-
-/* Group A/B card style */
-.group-ab-card {
-  background-color: #ffe4e1;
-}
-
-/* Common card styling */
-.group-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  padding: 20px 30px;
-  width: 250px;
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.group-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Titles */
-.group-title {
-  color: green;
-  font-size: 1.5em;
-  margin-bottom: 16px;
-}
-
-/* Button-style links */
-.quiz-btn {
-  display: inline-block;
-  margin: 6px 0;
-  padding: 10px 16px;
-  background-color: #4CAF50;
-  color: white;
+.back-button a {
   text-decoration: none;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 1em;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.3s ease;
 }
 
-.quiz-btn:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
+.back-button a:hover {
+  background-color: #218838;
 }
 
-.quiz-btn:active {
-  transform: scale(0.98);
-}
-
-/* Links container inside card */
-.quiz-links {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-/* Group A & B container row */
-.groups-container {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-
-/* Responsive cards */
-@media (max-width: 600px) {
-  .group-card {
-    width: 90%;
-  }
-
-  .groups-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  /* Left-justified paragraph style */
+/* Paragraph alignment */
 .left-justified {
   text-align: left !important;
 }
 
-}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    padding: 20px 25px;
+  }
 
+  h1 {
+    font-size: 1.8em;
+  }
+
+  .section-title {
+    font-size: 1.1em;
+  }
+
+  .point {
+    font-size: 0.95em;
+  }
 }
