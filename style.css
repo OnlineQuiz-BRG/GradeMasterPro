@@ -94,3 +94,48 @@ h1 {
     font-size: 0.95em;
   }
 }
+
+/* New card layout for links */
+.card-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  width: 280px;
+  text-align: center;
+}
+
+.card h3 {
+  margin-bottom: 15px;
+  color: #0b5e00;
+}
+
+.card-button {
+  display: block;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  margin: 6px auto;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 100%;
+  }
+}
