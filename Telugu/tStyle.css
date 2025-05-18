@@ -27,6 +27,15 @@ body {
   backdrop-filter: blur(4px);
   margin-bottom: 30px;
 }
+/* Common height for title and programme cards */
+.title-card,
+.card {
+  min-height: 180px; /* Adjust this value as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
 .main-title {
   color: green;
