@@ -69,17 +69,21 @@ body {
   margin-bottom: 0.8rem;
 }
 
-/* Stage Buttons Layout */
+/* Stage Buttons Layout with 3 columns and 6 rows */
 .stage-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  grid-template-rows: repeat(6, auto);  /* 6 rows, auto height */
   gap: 0.5rem;
+  justify-items: center; /* center buttons horizontally */
 }
 
-/* Tighter button style */
+/* Buttons inside stage-buttons */
 .stage-buttons .card-button {
-  font-size: 0.85rem;
-  padding: 0.4rem 0.5rem;
+  width: 100%;
+  max-width: 150px; /* control max button width */
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
   margin: 0;
   background-color: #4e54c8;
   color: white;
@@ -117,15 +121,17 @@ body {
   transform: translateY(-2px);
 }
 
-/* Responsive Design for stage buttons */
+/* Responsive: On smaller screens, stack columns */
 @media (max-width: 768px) {
-  .stage-buttons a {
-    flex: 0 1 calc(50% - 20px); /* 2-column for tablets */
+  .stage-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
   }
 }
 
 @media (max-width: 480px) {
-  .stage-buttons a {
-    flex: 0 1 100%; /* single column for mobiles */
+  .stage-buttons {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
 }
