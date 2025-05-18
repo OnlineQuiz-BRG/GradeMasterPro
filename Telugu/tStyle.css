@@ -1,12 +1,4 @@
-<!--  /* General Styles */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(to bottom right, #e0f7fa, #fffde7);
-  color: #333;
-}
--->
+/* General Styles */
 body {
   font-family: 'Nunito', sans-serif;
   margin: 0;
@@ -17,13 +9,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
 .container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
 }
-  
+
 .title-card {
   background-color: #ffffffcc; /* translucent white */
   border-radius: 16px;
@@ -33,7 +27,7 @@ body {
   backdrop-filter: blur(4px);
   margin-bottom: 30px;
 }
-  
+
 .main-title {
   color: green;
   font-size: 2em;
@@ -113,7 +107,7 @@ body {
   content: "🔒 ";
 }
 
-/* Two-column layout for stages */
+/* ✅ 3-column layout for stages */
 .stage-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -122,6 +116,19 @@ body {
 }
 
 .stage-buttons a {
-  flex: 0 1 calc(50% - 20px); /* two columns */
+  flex: 0 1 calc(33.33% - 20px); /* 3 columns */
   box-sizing: border-box;
+}
+
+/* ✅ Responsive layout for smaller screens */
+@media (max-width: 768px) {
+  .stage-buttons a {
+    flex: 0 1 calc(50% - 20px); /* 2 columns */
+  }
+}
+
+@media (max-width: 480px) {
+  .stage-buttons a {
+    flex: 0 1 100%; /* 1 column */
+  }
 }
