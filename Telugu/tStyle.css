@@ -23,7 +23,17 @@ body {
   padding: 20px;
   text-align: center;
 }
-
+  
+.title-card {
+  background-color: #ffffffcc; /* translucent white */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px 30px;
+  display: inline-block; /* shrink to fit */
+  backdrop-filter: blur(4px);
+  margin-bottom: 30px;
+}
+  
 .main-title {
   color: green;
   font-size: 2em;
