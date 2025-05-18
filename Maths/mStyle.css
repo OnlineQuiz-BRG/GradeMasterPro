@@ -34,7 +34,7 @@ body {
 }
 
 .main-title {
-  color: green;
+  color: red;
   font-size: 2em;
   margin-bottom: 10px;
 }
@@ -54,7 +54,7 @@ body {
 
 /* Programme Details Card */
 .card {
-  background-color: #ffffff;
+  background-color: #e81026;
   border-radius: 16px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
