@@ -70,12 +70,7 @@
     <source id="audio-source" src="" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
- 
-  <div style="margin-top: 1rem;">
-  <label for="volumeControl"><strong>Volume:</strong></label>
-  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
-  </div>
-  
+
   <div id="header-container" style="margin-top: 0rem;">
     <h1 id="header" style="background-color: #28a745; color: white; padding: 1rem 1rem; border-radius: 12px; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: background-color 0.3s ease;">
       👉 Start Dictation Practice
@@ -94,7 +89,6 @@
     const container = document.getElementById("words-container");
     const header = document.getElementById("header");
     const timerDisplay = document.getElementById("timer");
-    const volumeControl = document.getElementById("volumeControl");
     
     let timerInterval;
     let secondsElapsed = 0;
@@ -149,7 +143,6 @@
       clearInterval(timerInterval);
     }
 
-  /*
      function showNextWord() {
       if (currentIndex >= words.length) {
         stopTimer();
@@ -167,49 +160,8 @@
         document.body.appendChild(endMsg);
         return;
       } 
-      */
-        
-      function showWordsSyncedToAudio() {
-  const interval = 10; // seconds per word
-  let lastIndex = -1;
-
-  const syncInterval = setInterval(() => {
-    if (audioElement.paused || audioElement.ended) {
-      clearInterval(syncInterval);
-      return;
-    }
-
-    const index = Math.floor(audioElement.currentTime / interval);
-
-    if (index !== lastIndex && index < words.length) {
-      const word = document.createElement("div");
-      word.className = "word";
-      word.textContent = words[index];
-      container.insertBefore(word, container.firstChild);
-      lastIndex = index;
-    }
-
-    if (index >= words.length) {
-      clearInterval(syncInterval);
-      stopTimer();
-      header.style.display = "none";
-      container.style.display = "none";
-      timerDisplay.style.display = "none";
-
-      const endMsg = document.createElement("h2");
-      endMsg.textContent = "Congratulations - Today's Dictation is Complete!";
-      endMsg.style.color = "#155724";
-      endMsg.style.backgroundColor = "#d4edda";
-      endMsg.style.padding = "1rem";
-      endMsg.style.borderRadius = "12px";
-      endMsg.style.fontSize = "1.8rem";
-      document.body.appendChild(endMsg);
-    }
-  }, 500);
-}
-
-
-   /*   
+      
+      
       const word = document.createElement("div");
       word.className = "word";
       word.textContent = words[currentIndex];
@@ -218,7 +170,7 @@
 
       wordTimeout = setTimeout(showNextWord, 10000);
     }
-*/
+    
     async function startDictation() {
       words = await fetchWords();
       startTimer();
