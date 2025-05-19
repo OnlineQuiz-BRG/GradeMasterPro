@@ -76,8 +76,8 @@
 </div>
 
 <h3>Listen carefully and Write</h3>
-<audio id="dictation-audio" controls controlsList="nodownload">
-  <source id="audioSource" src="https://onlinequiz-brg.github.io/QuizBuz/audio/S1T1.mp3" type="audio/mpeg">
+<audio id="dictation-audio" controls controlsList="nodownload"> 
+  <source id="audioSource" src="" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
 
@@ -102,6 +102,9 @@
 // ✅ Updated sheet URLs
 const wordSheetUrl =
   "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=Sheet1";
+
+const audioUrlSheet =
+  "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=ODT&range=B1";
 
 const audioElement = document.getElementById("dictation-audio");
 const audioSource = document.getElementById("audioSource");
