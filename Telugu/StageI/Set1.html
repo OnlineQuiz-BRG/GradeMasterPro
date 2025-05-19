@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dictation Practice</title>  
- <style>
+  <title>Dictation Practice</title>
+  <style>
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
       background: linear-gradient(to bottom, #ffe29f, #ffa99f);
@@ -13,6 +13,7 @@
       align-items: center;
       padding: 2rem;
       color: #222;
+      position: relative;
     }
     #words-container {
       width: 100%;
@@ -55,140 +56,140 @@
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
-  
 </head>
 <body>
-  <div style="background-color: #fff; border-left: 6px solid #007bff; padding: 1rem 1.5rem; max-width: 600px; font-size: 1rem; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
-    <p><strong>Instructions:</strong></p>
-    <ol style="padding-left: 1.2rem;">
-      <li>Click the ▶️ <strong> Play </strong> button below.</li>
-      <li>Then click on <strong>👉 Start Dictation Practice</strong> to begin the Dictation.</li>
-    </ol>
-  </div>
 
-  <h3>Listen carefully and Write</h3>
-  <audio id="dictation-audio" controls>
-    <source id="audio-source" src="" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+<div style="
+ background-color: #fff;
+ border-left: 6px solid #007bff;
+ padding: 1rem 1.5rem;
+ max-width: 600px;
+ font-size: 1rem;
+ border-radius: 12px;
+ box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+ margin-bottom: 1.5rem;">
+ <p><strong>Instructions:</strong></p>
+ <ol style="padding-left: 1.2rem;">
+   <li>Click the ▶️ <strong> Play </strong> button below.</li>
+   <li>Then click on <strong>👉 Start Dictation Practice</strong> to begin the Dictation.</li>
+ </ol>
+</div>
 
-  <div id="header-container" style="margin-top: 0rem;">
-    <h1 id="header" style="background-color: #28a745; color: white; padding: 1rem 1rem; border-radius: 12px; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: background-color 0.3s ease;">
-      👉 Start Dictation Practice
-    </h1>
-  </div>
+<h3>Listen carefully and Write</h3>
+<audio id="dictation-audio" controls controlsList="nodownload"> 
+  <source id="audioSource" src="" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
 
-  <div id="timer"></div>
-  <div id="words-container"></div>
+<div id="header-container" style="margin-top: 2rem;">
+  <h1 id="header" style="
+    background-color: #28a745;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;">
+    👉 Start Dictation Practice
+  </h1>
+</div>
 
-  <script>
-    const wordsSheetUrl = "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=Dictation_1";
-                         /* 1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI - new
-                          1p3yt0RLxKUxAxHsNd4euReV-TbLImxJov37Ini9VXWM - old
-    const mp3SheetUrl = "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=ODT&range=B1";*/
-    const mp3SheetUrl = "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&tq=SELECT+B&sheet=ODT";
-    
+<div id="timer"></div>
+<div id="words-container"></div>
 
-    const audioElement = document.getElementById("dictation-audio");
-    const audioSource = document.getElementById("audio-source");
-    const container = document.getElementById("words-container");
-    const header = document.getElementById("header");
-    const timerDisplay = document.getElementById("timer");
-    
-    let timerInterval;
-    let secondsElapsed = 0;
-    let currentIndex = 0;
-    let words = [];
-    let wordTimeout;
+<script>
+const wordSheetUrl =
+  "https://docs.google.com/spreadsheets/d/1290JgWOG1tnVjf8xmotOjZRPXFaF9-qHbFqEAysbIEo/gviz/tq?tqx=out:json&sheet=Sheet1";
 
-    async function fetchWords() {
-      const res = await fetch(wordsSheetUrl);
-      const text = await res.text();
-      const json = JSON.parse(text.substring(47).slice(0, -2));
-      const rows = json.table.rows;
-      return rows.map(r => r.c[1]?.v?.trim()).filter(Boolean);
-    }
-   
-    async function fetchMp3Url() {
-      try {
-        const res = await fetch(mp3SheetUrl);
-        const text = await res.text();
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const mp3Url = json.table.rows[0].c[0].v;
-        return mp3Url;
-      } catch (err) {
-        console.error("Error fetching MP3 URL:", err);
-        return "";
-      }
-    }
+const audioUrlSheet =
+  "https://docs.google.com/spreadsheets/d/1290JgWOG1tnVjf8xmotOjZRPXFaF9-qHbFqEAysbIEo/gviz/tq?tqx=out:json&sheet=ODT&range=K2";
 
-    async function initializeAudio() {
-      const mp3Url = await fetchMp3Url();
-      if (mp3Url) {
-        audioSource.src = mp3Url;
-        audioElement.load();
-      } else {
-        alert("MP3 file URL could not be loaded. Please check the sheet.");
-      }
-    }
+const audioElement = document.getElementById("dictation-audio");
+const audioSource = document.getElementById("audioSource");
+const container = document.getElementById("words-container");
+const header = document.getElementById("header");
+const timerDisplay = document.getElementById("timer");
 
-    function startTimer() {
-      timerInterval = setInterval(() => {
-        secondsElapsed++;
-        const minutes = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-        const seconds = String(secondsElapsed % 60).padStart(2, '0');
-        timerDisplay.textContent = `${minutes}:${seconds}`;
-      }, 1000);
-    }
+let timerInterval;
+let secondsElapsed = 0;
+let currentIndex = 0;
+let words = [];
+let wordTimeout;
 
-    function stopTimer() {
-      clearInterval(timerInterval);
-    }
+// Set MP3 URL from Sheet (K2 in ODT tab)
+async function setAudioFromSheet() {
+  const res = await fetch(audioUrlSheet);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47).slice(0, -2));
+  const mp3Url = json.table.rows[0].c[0].v;
+  audioSource.src = mp3Url;
+  audioElement.load(); // reload the audio element with new source
+}
 
-     function showNextWord() {
-      if (currentIndex >= words.length) {
-        stopTimer();
-        header.style.display = "none";
-        container.style.display = "none";
-        timerDisplay.style.display = "none";
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    const minutes = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+    const seconds = String(secondsElapsed % 60).padStart(2, '0');
+    timerDisplay.textContent = `${minutes}:${seconds}`;
+  }, 1000);
+}
 
-        const endMsg = document.createElement("h2");
-        endMsg.textContent = "Congratulations - Today's Dictation is Complete!";
-        endMsg.style.color = "#155724";
-        endMsg.style.backgroundColor = "#d4edda";
-        endMsg.style.padding = "1rem";
-        endMsg.style.borderRadius = "12px";
-        endMsg.style.fontSize = "1.8rem";
-        document.body.appendChild(endMsg);
-        return;
-      } 
-      
-      
-      const word = document.createElement("div");
-      word.className = "word";
-      word.textContent = words[currentIndex];
-      container.insertBefore(word, container.firstChild);
-      currentIndex++;
+function stopTimer() {
+  clearInterval(timerInterval);
+}
 
-      wordTimeout = setTimeout(showNextWord, 10000);
-    }
-    
-    async function startDictation() {
-      words = await fetchWords();
-      startTimer();
-    /*  showNextWord();*/
-      audioElement.play();
-      showWordsSyncedToAudio();
-    }
+async function fetchWords() {
+  const res = await fetch(wordSheetUrl);
+  const text = await res.text();
+  const json = JSON.parse(text.substring(47).slice(0, -2));
+  const rows = json.table.rows;
+  return rows.map(r => r.c[1]?.v?.trim()).filter(Boolean);
+}
 
-    header.addEventListener("click", () => {
-      header.style.pointerEvents = "none";
-      header.textContent = "Group A : Dictation in Progress...";
-      startDictation();
-    });
+function showNextWord() {
+  if (currentIndex >= words.length) {
+    stopTimer();
+    header.style.display = "none";
+    container.style.display = "none";
+    timerDisplay.style.display = "none";
 
-    // Initialize MP3 when page loads
-    window.onload = initializeAudio;
-  </script>
+    const endMsg = document.createElement("h2");
+    endMsg.textContent = "Congratulations - Today's Dictation is Complete!";
+    endMsg.style.color = "#155724";
+    endMsg.style.backgroundColor = "#d4edda";
+    endMsg.style.padding = "1rem";
+    endMsg.style.borderRadius = "12px";
+    endMsg.style.fontSize = "1.8rem";
+    document.body.appendChild(endMsg);
+    return;
+  }
+
+  const word = document.createElement("div");
+  word.className = "word";
+  word.textContent = words[currentIndex];
+  container.insertBefore(word, container.firstChild);
+  currentIndex++;
+
+  wordTimeout = setTimeout(showNextWord, 10000);
+}
+
+async function startDictation() {
+  words = await fetchWords();
+  startTimer();
+  showNextWord();
+}
+
+window.onload = async () => {
+  await setAudioFromSheet(); // set audio source on page load
+};
+
+header.addEventListener("click", () => {
+  header.style.pointerEvents = "none"; // prevent multiple clicks
+  header.textContent = "Group B : Dictation in Progress...";
+  startDictation();
+});
+</script>
 </body>
 </html>
