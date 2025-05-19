@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -116,6 +116,158 @@
       showNextWord();
       const timer = setInterval(showNextWord, interval);
     }
+  </script>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stage I Telugu Dictation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fff8dc;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  color: #0074D9;
+  font-size: 1.8em;
+  margin-bottom: 30px;
+}
+
+#wordDisplay {
+  font-size: 2.2em;
+  background: #fff3cd;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade {
+  opacity: 0.2;
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+audio {
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 500px;
+}
+
+button {
+  background-color: #f9a825;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #f57f17;
+}
+
+    
+  </style>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Stage I Telugu Dictation</h1>
+    
+    <div id="wordDisplay">Press "Start Dictation"</div>
+
+    <audio id="dictationAudio" controls></audio>
+
+    <button id="startBtn" onclick="startDictation()">Start Dictation</button>
+  </div>
+
+  <script>
+    let words = [];
+    let currentIndex = 0;
+    let timer;
+
+    async function fetchWordsAndAudio() {
+      const url = 'https://sheets.googleapis.com/v4/spreadsheets/1q98zrgmb9OEog0FEKz8UtRe4HtP3T7MDEehobzAJXyc/values/ODT!B1:B41?key=AIzaSyBo5Ri4-oBCEAEvTMo0r_pZRMJmuvFcFhY';
+      
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        if (!data.values) {
+          throw new Error("No data returned from Google Sheet");
+        }
+
+        const allValues = data.values.map(row => row[0] || "");
+        const audioUrl = allValues[0];
+
+        words = allValues.slice(1)
+          .filter(w => w.trim() !== "")
+          .map(w => w.replace(/^\d+\.\s*/, '').split("—")[0].trim());
+
+        document.getElementById("dictationAudio").src = audioUrl;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("wordDisplay").textContent = "Error loading data!";
+      }
+    }
+
+    function startDictation() {
+      if (words.length === 0) {
+        alert("Words not loaded yet. Please wait a moment.");
+        return;
+      }
+
+      currentIndex = 0;
+      displayWord();
+
+      if (timer) clearInterval(timer);
+      timer = setInterval(() => {
+        currentIndex++;
+        if (currentIndex >= words.length) {
+          clearInterval(timer);
+          document.getElementById("wordDisplay").textContent = "Dictation complete!";
+        } else {
+          displayWord();
+        }
+      }, 10000); // 10 seconds per word
+
+      const audio = document.getElementById("dictationAudio");
+      audio.currentTime = 0;
+      audio.play();
+    }
+
+    function displayWord() {
+      const wordDiv = document.getElementById("wordDisplay");
+      wordDiv.textContent = `${currentIndex + 1}. ${words[currentIndex]}`;
+      wordDiv.classList.remove("fade");
+      void wordDiv.offsetWidth; // restart animation
+      wordDiv.classList.add("fade");
+    }
+
+    // Fetch on load
+    fetchWordsAndAudio();
   </script>
 </body>
 </html>
