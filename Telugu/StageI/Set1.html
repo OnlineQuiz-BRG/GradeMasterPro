@@ -99,11 +99,12 @@
 <div id="words-container"></div>
 
 <script>
+// ✅ Updated sheet URLs
 const wordSheetUrl =
-  "https://docs.google.com/spreadsheets/d/1290JgWOG1tnVjf8xmotOjZRPXFaF9-qHbFqEAysbIEo/gviz/tq?tqx=out:json&sheet=Sheet1";
+  "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=Sheet1";
 
 const audioUrlSheet =
-  "https://docs.google.com/spreadsheets/d/1290JgWOG1tnVjf8xmotOjZRPXFaF9-qHbFqEAysbIEo/gviz/tq?tqx=out:json&sheet=ODT&range=K2";
+  "https://docs.google.com/spreadsheets/d/1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI/gviz/tq?tqx=out:json&sheet=ODT&range=B1";
 
 const audioElement = document.getElementById("dictation-audio");
 const audioSource = document.getElementById("audioSource");
@@ -117,14 +118,19 @@ let currentIndex = 0;
 let words = [];
 let wordTimeout;
 
-// Set MP3 URL from Sheet (K2 in ODT tab)
+// ✅ Fetch MP3 URL from Sheet (B1 in ODT tab)
 async function setAudioFromSheet() {
-  const res = await fetch(audioUrlSheet);
-  const text = await res.text();
-  const json = JSON.parse(text.substring(47).slice(0, -2));
-  const mp3Url = json.table.rows[0].c[0].v;
-  audioSource.src = mp3Url;
-  audioElement.load(); // reload the audio element with new source
+  try {
+    const res = await fetch(audioUrlSheet);
+    const text = await res.text();
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const mp3Url = json.table.rows[0].c[0].v;
+    audioSource.src = mp3Url;
+    audioElement.load(); // reload the audio element with new source
+  } catch (error) {
+    alert("MP3 file URL could not be loaded. Please check the sheet.");
+    console.error("Audio URL load error:", error);
+  }
 }
 
 function startTimer() {
@@ -172,7 +178,7 @@ function showNextWord() {
   container.insertBefore(word, container.firstChild);
   currentIndex++;
 
-  wordTimeout = setTimeout(showNextWord, 10000);
+  wordTimeout = setTimeout(showNextWord, 10000); // 10 seconds interval
 }
 
 async function startDictation() {
