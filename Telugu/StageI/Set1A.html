@@ -45,14 +45,12 @@
   <audio id="dictationAudio" controls autoplay loop></audio>
 
   <script>
-    const sheetID = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI'; // Replace with actual ID
+    const sheetID = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI';
     const sheetName = 'ODT';
-    const columnMap = {}; // Maps set numbers to column letters
 
-    // Generate columnMap for 1 to 50 => B to AY
-    const colStart = 'B'.charCodeAt(0);
+    const columnMap = {};
     for (let i = 1; i <= 50; i++) {
-      const colIndex = i + 1;
+      let colIndex = i + 1;
       let colLetter = '';
       if (colIndex <= 26) {
         colLetter = String.fromCharCode(64 + colIndex);
@@ -65,40 +63,53 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const setNumber = parseInt(params.get("set"));
+    const setNumber = parseInt(params.get("set") || "1");
     const columnLetter = columnMap[setNumber];
-
     const sheetRange = `${sheetName}!${columnLetter}1:${columnLetter}41`;
 
     async function fetchWordsAndAudio() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetRange}?alt=json&key=AIzaSyBmVSHUCirmMvZi3m9EF-C1tE9q6Ccoo-8`; // Replace with actual key
-      const res = await fetch(url);
-      const data = await res.json();
-      const values = data.values.map(row => row[0]);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetRange}?alt=json&key=AIzaSyBmVSHUCirmMvZi3m9EF-C1tE9q6Ccoo-8`;
 
-      const audioUrl = values[0]; // First row (cell like B1) is the audio link
-      const words = values.slice(1, 41); // Next 40 rows are dictation words
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Google Sheets API fetch failed");
+        const data = await res.json();
+        const values = data.values.map(row => row[0]);
 
-      document.getElementById("dictationAudio").src = audioUrl;
-      return words;
+        const audioUrl = values[0];
+        const words = values.slice(1, 41);
+
+        const audio = document.getElementById("dictationAudio");
+        if (audioUrl) {
+          audio.src = audioUrl;
+          await audio.load();
+        }
+
+        return words;
+      } catch (err) {
+        console.error("Error loading data:", err);
+        alert("Unable to load dictation set. Check your API key, sheet permissions, or set number.");
+        return [];
+      }
     }
 
     async function startDictation() {
       const wordDisplay = document.getElementById("wordDisplay");
       const words = await fetchWordsAndAudio();
+      if (words.length === 0) return;
 
       let index = 0;
-      const interval = 10000; // 10 seconds
+      const interval = 10000;
 
       function showNextWord() {
         if (index < words.length) {
           wordDisplay.textContent = words[index++];
           wordDisplay.classList.remove("fade-in");
-          void wordDisplay.offsetWidth; // Trigger reflow
+          void wordDisplay.offsetWidth;
           wordDisplay.classList.add("fade-in");
         } else {
           clearInterval(timer);
-          wordDisplay.textContent = "Congratulations Today's Dictation is Completed!";
+          wordDisplay.textContent = "Congratulations! Today's Dictation is Completed!";
         }
       }
 
