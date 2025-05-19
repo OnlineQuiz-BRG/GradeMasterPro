@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Telugu Dictation</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: #fff8dc;
+      color: #333;
+      padding: 20px;
+    }
+    h1 {
+      color: #0077cc;
+    }
+    #wordDisplay {
+      font-size: 3em;
+      margin: 40px 0;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+    #wordDisplay.fade-in {
+      opacity: 1;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1.2em;
+      background-color: #ff9800;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    audio {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stage I Telugu Dictation</h1>
+  <div id="wordDisplay">Press Start to Begin</div>
+  <button onclick="startDictation()">Start Dictation</button>
+  <audio id="dictationAudio" controls autoplay loop></audio>
+
+  <script>
+    const sheetID = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI'; // Replace with actual ID
+    const sheetName = 'ODT';
+    const columnMap = {}; // Maps set numbers to column letters
+
+    // Generate columnMap for 1 to 50 => B to AY
+    const colStart = 'B'.charCodeAt(0);
+    for (let i = 1; i <= 50; i++) {
+      const colIndex = i + 1;
+      let colLetter = '';
+      if (colIndex <= 26) {
+        colLetter = String.fromCharCode(64 + colIndex);
+      } else {
+        const first = String.fromCharCode(64 + Math.floor((colIndex - 1) / 26));
+        const second = String.fromCharCode(65 + ((colIndex - 1) % 26));
+        colLetter = first + second;
+      }
+      columnMap[i] = colLetter;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const setNumber = parseInt(params.get("set"));
+    const columnLetter = columnMap[setNumber];
+
+    const sheetRange = `${sheetName}!${columnLetter}1:${columnLetter}41`;
+
+    async function fetchWordsAndAudio() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetRange}?alt=json&key=AIzaSyBmVSHUCirmMvZi3m9EF-C1tE9q6Ccoo-8`; // Replace with actual key
+      const res = await fetch(url);
+      const data = await res.json();
+      const values = data.values.map(row => row[0]);
+
+      const audioUrl = values[0]; // First row (cell like B1) is the audio link
+      const words = values.slice(1, 41); // Next 40 rows are dictation words
+
+      document.getElementById("dictationAudio").src = audioUrl;
+      return words;
+    }
+
+    async function startDictation() {
+      const wordDisplay = document.getElementById("wordDisplay");
+      const words = await fetchWordsAndAudio();
+
+      let index = 0;
+      const interval = 10000; // 10 seconds
+
+      function showNextWord() {
+        if (index < words.length) {
+          wordDisplay.textContent = words[index++];
+          wordDisplay.classList.remove("fade-in");
+          void wordDisplay.offsetWidth; // Trigger reflow
+          wordDisplay.classList.add("fade-in");
+        } else {
+          clearInterval(timer);
+          wordDisplay.textContent = "Congratulations Today's Dictation is Completed!";
+        }
+      }
+
+      showNextWord();
+      const timer = setInterval(showNextWord, interval);
+    }
+  </script>
+</body>
+</html>
