@@ -103,10 +103,7 @@
       const rows = json.table.rows;
       return rows.map(r => r.c[1]?.v?.trim()).filter(Boolean);
     }
-    volumeControl.addEventListener("input", () => {
-    audioElement.volume = volumeControl.value;
-    });
-
+   
     async function fetchMp3Url() {
       try {
         const res = await fetch(mp3SheetUrl);
