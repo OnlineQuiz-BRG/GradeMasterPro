@@ -67,14 +67,15 @@
 
   <h3>Listen carefully and Write</h3>
   <audio id="dictation-audio" controls>
-    <div style="margin-top: 1rem;">
-  <label for="volumeControl"><strong>Volume:</strong></label>
-  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
-</div>
     <source id="audio-source" src="" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
-
+ 
+  <div style="margin-top: 1rem;">
+  <label for="volumeControl"><strong>Volume:</strong></label>
+  <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="1">
+  </div>
+  
   <div id="header-container" style="margin-top: 0rem;">
     <h1 id="header" style="background-color: #28a745; color: white; padding: 1rem 1rem; border-radius: 12px; text-align: center; cursor: pointer; box-shadow: 0 4px 8px rgba(0,0,0,0.2); transition: background-color 0.3s ease;">
       👉 Start Dictation Practice
@@ -208,7 +209,7 @@
 }
 
 
-      
+   /*   
       const word = document.createElement("div");
       word.className = "word";
       word.textContent = words[currentIndex];
@@ -217,7 +218,7 @@
 
       wordTimeout = setTimeout(showNextWord, 10000);
     }
-
+*/
     async function startDictation() {
       words = await fetchWords();
       startTimer();
