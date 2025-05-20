@@ -6,21 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
   <style>
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 255, 255, 0.4); /* Light white overlay */
+  z-index: -1;
+}
+    
     body {
   margin: 0;
   padding: 0;
   font-family: 'Baloo 2', cursive;
-  background: linear-gradient(to right, rgba(161, 140, 209, 0.5), rgba(251, 194, 235, 0.5)),
-              url('https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/bcgimage.jpeg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image: url('https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/bcgimage.jpg');
+  background-size: cover;               /* Ensures image fills the screen */
+  background-position: center center;   /* Centers the image */
+  background-repeat: no-repeat;         /* Prevents repeating */
+  background-attachment: fixed;         /* Keeps background fixed on scroll */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
 }
+
 
 
     .login-box {
