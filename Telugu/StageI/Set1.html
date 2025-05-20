@@ -171,6 +171,11 @@ function showNextWord() {
     document.body.appendChild(endMsg);
     return;
   }
+  // After quiz is completed
+  function logoutAfterTest() {
+  alert("Test completed. Logging out...");
+  window.location.href = "https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/login.html";
+  }
 
   const word = document.createElement("div");
   word.className = "word";
