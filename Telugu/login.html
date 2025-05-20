@@ -90,13 +90,19 @@
   </div>
 
   <div class="login-box">
-    <input type="text" id="loginCode" placeholder="Enter Your Login Code (e.g., NVMK0112)" />
+    <input type="text" id="loginCode" placeholder="Enter Login Code (e.g., NVMK123409)" />
     <button onclick="verifyCode()">Login</button>
     <p id="message"></p>
   </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // Replace with your actual Apps Script URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxVa4HfXfKVk0eg7xmrPqeATOptEhDHJE3o7yDsjvF4oHPuSCcO2SbrdMmgCMojAYxD/exec"; // Replace with your actual URL
+
+    function isValidCodeFormat(code) {
+      // Format: NVMKXXXXYY => Total 11 characters
+      const regex = /^NVMK\d{6}$/;
+      return regex.test(code);
+    }
 
     async function verifyCode() {
       const code = document.getElementById("loginCode").value.trim().toUpperCase();
@@ -104,6 +110,11 @@
 
       if (!code) {
         message.textContent = "Please enter your login code.";
+        return;
+      }
+
+      if (!isValidCodeFormat(code)) {
+        message.textContent = "Invalid code format. Use NVMK123409.";
         return;
       }
 
