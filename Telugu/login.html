@@ -6,31 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
   <style>
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255, 255, 255, 0.4); /* Light white overlay */
-  z-index: -1;
-}
-    
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Baloo 2', cursive;
+      height: 100%;
+    }
+
     body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Baloo 2', cursive;
-  background-image: url('https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/bcgimage.jpg');
-  background-size: cover;               /* Ensures image fills the screen */
-  background-position: center center;   /* Centers the image */
-  background-repeat: no-repeat;         /* Prevents repeating */
-  background-attachment: fixed;         /* Keeps background fixed on scroll */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
+      background: url('https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/bcgimage.jpg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+      z-index: 0;
+    }
 
-
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: -1;
+    }
 
     .login-box {
       background: rgba(255, 255, 255, 0.95);
@@ -51,7 +52,7 @@ body::before {
       border: 4px solid #ff9933;
       box-shadow: 0 0 12px rgba(255, 153, 51, 0.6);
       display: block;
-      margin: 0 auto 10px;
+      margin: 0 auto 15px;
     }
 
     h1 {
@@ -61,7 +62,7 @@ body::before {
     }
 
     h3 {
-      color: #1b1b1b;
+      color: #4a2c2a;
       margin-bottom: 25px;
       font-size: 16px;
     }
@@ -84,12 +85,19 @@ body::before {
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
+      animation: pulse 2s infinite;
     }
 
     .login-button:hover {
       background-color: #ff7518;
       transform: scale(1.05);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
