@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Login</title>
+  <style>
+    body { font-family: Arial; display: flex; height: 100vh; justify-content: center; align-items: center; background: #f4f4f4; }
+    .login-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #aaa; }
+    input { padding: 10px; width: 100%; margin: 10px 0; }
+    button { padding: 10px; width: 100%; background: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Student Login</h2>
+    <input type="text" id="loginCode" placeholder="Enter Login Code" />
+    <button onclick="verifyCode()">Login</button>
+    <p id="message" style="color: red;"></p>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzecdMhi8I5Yyp_yAl7dQ9QUszk2PJkAqhC6Eq7RiLzmB8Ou8fiM35Qj3_AHCNCkusv/exec";
+
+    async function verifyCode() {
+      const code = document.getElementById("loginCode").value.trim().toUpperCase();
+      const message = document.getElementById("message");
+
+      if (!code) {
+        message.textContent = "Please enter your login code.";
+        return;
+      }
+
+      const res = await fetch(`${scriptURL}?code=${code}`);
+      const result = await res.json();
+
+      if (result.success) {
+        // Save student name to localStorage (optional)
+        localStorage.setItem("studentName", result.name);
+        // Redirect to quiz
+        window.location.href = "https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html";
+      } else {
+        message.textContent = "Invalid login code. Please try again.";
+      }
+    }
+  </script>
+</body>
+</html>
