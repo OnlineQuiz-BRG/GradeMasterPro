@@ -151,7 +151,7 @@ async function fetchWords() {
   const text = await res.text();
   const json = JSON.parse(text.substring(47).slice(0, -2));
   const rows = json.table.rows;
-  return rows.map(r => r.c[1]?.v?.trim()).filter(Boolean);
+  return rows.map(r => r.c[9]?.v?.trim()).filter(Boolean);
 }
 
 function showNextWord() {
