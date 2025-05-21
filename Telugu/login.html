@@ -125,8 +125,11 @@
       const result = await response.json();
 
       if (result.valid) {
-        window.location.href = "https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html";
-      } else {
+        /*window.location.href = "https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html";*/
+        // After you verify the code successfully...
+        localStorage.setItem('loggedIn', 'true');
+        window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html';
+        } else {
         alert("Invalid login code. Please try again.");
       }
     }
