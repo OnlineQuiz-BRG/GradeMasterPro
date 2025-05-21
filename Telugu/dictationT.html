@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/GradeMasterPro/Telugu/tStyle.css" />
   <style>
+    <script>
+  // Guard: if not logged in, drop back to the login page
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html';
+  }
     body {
       font-family: Arial, sans-serif;
       margin: 2rem;
