@@ -10,19 +10,34 @@
       margin: 2rem;
       text-align: center;
     }
-    .word-box {
-      font-size: 2rem;
-      margin-top: 2rem;
-      text-align: left;             /* Left-align the text */
-      display: inline-block;        /* So it doesn't stretch full width */
+
+    .word-box-container {
+      display: flex;
+      justify-content: center;
     }
+
+    .word-box {
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      text-align: left;
+      width: 100%;
+      max-width: 600px;
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
     .word {
       animation: fadeIn 1s ease-in-out;
       margin-bottom: 0.5rem;
     }
+
     audio {
       margin-top: 2rem;
     }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -31,9 +46,10 @@
 </head>
 <body>
   <h2>Telugu Dictation Practice</h2>
-  <div> <audio id="audioPlayer" controls autoplay></audio></div>
-  <div id="wordBox" class="word-box">Loading...</div>
- 
+  <audio id="audioPlayer" controls autoplay></audio>
+  <div class="word-box-container">
+    <div id="wordBox" class="word-box">Loading...</div>
+  </div>
 
   <script>
     const testNumber = parseInt(new URLSearchParams(window.location.search).get("test"));
@@ -86,14 +102,19 @@
 
         // Wait 10s after audio starts, then display words every 10s
         setTimeout(() => {
-          box.innerText = ""; // clear "Loading..."
+          box.innerHTML = ""; // clear "Loading..."
           let i = 0;
+
           const showNext = () => {
             if (i < words.length) {
               const wordDiv = document.createElement("div");
               wordDiv.className = "word";
               wordDiv.innerText = words[i];
               box.appendChild(wordDiv);
+
+              // Auto-scroll to the bottom
+              box.scrollTop = box.scrollHeight;
+
               i++;
               setTimeout(showNext, 10000);
             } else {
@@ -101,10 +122,12 @@
               doneDiv.style.marginTop = "1rem";
               doneDiv.innerText = "Test complete!";
               box.appendChild(doneDiv);
+              box.scrollTop = box.scrollHeight;
             }
           };
+
           showNext();
-        }, 10000);
+        }, 10000); // Wait 10 seconds before showing words
       })
       .catch(err => {
         box.innerText = "Failed to load data.";
