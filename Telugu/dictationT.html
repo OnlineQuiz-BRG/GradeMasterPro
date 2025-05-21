@@ -5,28 +5,34 @@
   <title>Dictation Test</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <!-- Your existing tStyle.css, plus our overrides below -->
+  <!-- Your existing styles -->
   <link rel="stylesheet" href="/GradeMasterPro/Telugu/tStyle.css">
 
   <style>
-    /* 1) Full-page background */
+    /* Full-screen 3-color gradient */
     html, body {
       height: 100%;
       margin: 0;
     }
     body {
-      background: url('/GradeMasterPro/Telugu/background.jpg') no-repeat center/cover;
+      background: linear-gradient(
+        45deg,
+        #ff9933,     /* Orange */
+        #e0ffff,     /* Light sky (almost white) */
+        #ffffff      /* White */
+      ) fixed;
       font-family: Arial, sans-serif;
       position: relative;
       color: #222;
     }
 
-    /* 2) Top-right controls */
+    /* Top-right: Back + Logout */
     .top-right-panel {
       position: absolute;
       top: 1rem;
       right: 1rem;
       display: flex;
+      flex-direction: column;
       gap: 0.5rem;
     }
     .top-right-panel a,
@@ -39,37 +45,36 @@
       text-decoration: none;
       cursor: pointer;
       font-size: 0.9rem;
+      text-align: center;
     }
 
-    /* 3) Main content container */
+    /* Main column */
     .content {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1.5rem;
-      padding-top: 4rem;           /* leave space under buttons */
+      padding-top: 3rem;
     }
-
-    /* 4) Title */
     .content h2 {
       margin: 0;
       font-size: 2rem;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
     }
 
-    /* 5) Audio player same width as word box */
+    /* Audio player & word-box aligned */
     audio {
       width: 400px;
       max-width: 90%;
       outline: none;
     }
 
-    /* 6) Word box styling */
+    /* Word box + stage/test header */
     .word-box {
       width: 400px;
       max-width: 90%;
       min-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background: rgba(255,255,255,0.8);
       padding: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -77,10 +82,15 @@
       color: #228B22;
       text-align: left;
       font-size: 1.2rem;
+      box-sizing: border-box;
+    }
+    .word-box .header {
+      font-weight: bold;
+      margin-bottom: 1rem;
     }
     .word-box .word {
-      margin-bottom: 0.5rem;
       animation: fadeIn 1s ease-in;
+      margin-bottom: 0.5rem;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
@@ -89,96 +99,112 @@
   </style>
 </head>
 <body>
-  <!-- Top-right Back + Logout -->
+
+  <!-- Top-right controls -->
   <div class="top-right-panel">
     <a href="Stage1T.html">← Back to Stage 1</a>
     <button id="logoutBtn">Logout</button>
   </div>
 
-  <!-- Main content -->
+  <!-- Centered content -->
   <div class="content">
     <h2>Telugu Dictation Practice</h2>
     <audio id="audioPlayer" controls controlsList="nodownload"></audio>
-    <div id="wordBox" class="word-box">Loading...</div>
+    <div id="wordBox" class="word-box">
+      Loading...
+    </div>
   </div>
 
   <script>
-    // Redirect if not logged in
+    // 1) SESSION GUARD
     if (localStorage.getItem('loggedIn') !== 'true') {
       window.location.href = 'login.html';
     }
-
-    // Logout handler
+    // 2) LOGOUT
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('loggedIn');
       window.location.href = 'login.html';
     });
 
-    // Dictation logic
-    const testNumber = parseInt(new URLSearchParams(location.search).get('test'), 10);
-    const box = document.getElementById('wordBox');
-    if (!testNumber || testNumber < 1 || testNumber > 50) {
-      box.innerText = 'Invalid test number!';
+    // 3) DICTATION LOGIC
+    const params    = new URLSearchParams(location.search);
+    const testNum   = parseInt(params.get('test'), 10);
+    const wordBox   = document.getElementById('wordBox');
+    const audioEl   = document.getElementById('audioPlayer');
+    if (!testNum || testNum < 1 || testNum > 50) {
+      wordBox.textContent = 'Invalid test number!';
       throw new Error('Invalid test number');
     }
 
     function getColumnLetter(n) {
       let col = '';
       while (n > 0) {
-        let rem = (n - 1) % 26;
+        let rem = (n-1) % 26;
         col = String.fromCharCode(65 + rem) + col;
-        n = Math.floor((n - 1) / 26);
+        n = Math.floor((n-1)/26);
       }
       return col;
     }
 
-    const sheetId = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI';
-    const colLetter = getColumnLetter(testNumber + 1);  // Test1→B, etc
-    const range = `ODT!${colLetter}1:${colLetter}41`;
-    const apiKey = 'AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
+    const sheetId    = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI';
+    const colLetter  = getColumnLetter(testNum + 1);         // Test1→B, etc
+    const range      = `ODT!${colLetter}1:${colLetter}41`;
+    const apiKey     = 'AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU';
+    const fetchURL   = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
 
-    fetch(url)
+    fetch(fetchURL)
       .then(r => r.ok ? r.json() : Promise.reject(r.statusText))
       .then(data => {
-        const vals = data.values?.map(r => r[0].trim()) || [];
+        const vals = (data.values||[]).map(r=>r[0].trim());
         if (vals.length < 2) {
-          box.innerText = 'Not enough data.';
+          wordBox.textContent = 'Not enough data.';
           return;
         }
-        const mp3 = vals[0];
+        const mp3   = vals[0];
         const words = vals.slice(1).filter(Boolean);
         if (!mp3.includes('.mp3')) {
-          box.innerText = 'No valid MP3 URL found.';
+          wordBox.textContent = 'No valid MP3 URL found.';
           return;
         }
-        document.getElementById('audioPlayer').src = mp3;
 
+        // Set audio src and play
+        audioEl.src = mp3;
+
+        // After 10s, show header + words, then clear & show congrats
         setTimeout(() => {
-          box.innerHTML = '';
+          wordBox.innerHTML = '';
+          // 3.1 header: Stage & Test
+          const hdr = document.createElement('div');
+          hdr.className = 'header';
+          hdr.textContent = `Stage 1 - Test ${testNum}`;
+          wordBox.appendChild(hdr);
+
           let i = 0;
           const showNext = () => {
             if (i < words.length) {
-              const d = document.createElement('div');
-              d.className = 'word';
-              d.textContent = `${i+1}. ${words[i]}`;
-              box.appendChild(d);
-              box.scrollTop = box.scrollHeight;
+              const w = document.createElement('div');
+              w.className = 'word';
+              w.textContent = `${i+1}. ${words[i]}`;
+              wordBox.appendChild(w);
+              wordBox.scrollTop = wordBox.scrollHeight;
               i++;
               setTimeout(showNext, 10000);
             } else {
-              const done = document.createElement('div');
-              done.style.marginTop = '1rem';
-              done.textContent = 'Test complete!';
-              box.appendChild(done);
-              box.scrollTop = box.scrollHeight;
+              // 3) At end, clear words and show congrats
+              wordBox.innerHTML = '';
+              const msg = document.createElement('div');
+              msg.style.fontWeight = 'bold';
+              msg.style.fontSize = '1.4rem';
+              msg.textContent = `Congratulations Test ${testNum} Dictation is Complete`;
+              wordBox.appendChild(msg);
             }
           };
           showNext();
         }, 10000);
+
       })
       .catch(err => {
-        box.innerText = 'Failed to load data.';
+        wordBox.textContent = 'Failed to load data.';
         console.error(err);
       });
   </script>
