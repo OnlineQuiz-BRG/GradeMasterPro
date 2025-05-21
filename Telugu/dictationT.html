@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dictation Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      text-align: center;
+    }
+
+    .word-box-container {
+      display: flex;
+      justify-content: center;
+    }
+
+    .word-box {
+      font-size: 1.8rem;
+      margin-top: 2rem;
+      text-align: left;
+      width: 100%;
+      max-width: 600px;
+      height: 400px; /* Always show vertical scrollbar */
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .word {
+      animation: fadeIn 1s ease-in-out;
+      margin-bottom: 0.5rem;
+    }
+
+    audio {
+      margin-top: 2rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Telugu Dictation Practice</h2>
+  <audio id="audioPlayer" controls controlsList="nodownload"></audio>
+ <!-- <audio id="dictation-audio" controls controlsList="nodownload"> -->
+  <div class="word-box-container">
+    <div id="wordBox" class="word-box">Loading...</div>
+  </div>
+
+  <script>
+    const testNumber = parseInt(new URLSearchParams(window.location.search).get("test"));
+    const box = document.getElementById("wordBox");
+
+    if (!testNumber || testNumber < 1 || testNumber > 50) {
+      box.innerText = "Invalid test number!";
+      throw new Error("Invalid test number");
+    }
+
+    function getColumnLetter(n) {
+      let col = "";
+      while (n > 0) {
+        let rem = (n - 1) % 26;
+        col = String.fromCharCode(65 + rem) + col;
+        n = Math.floor((n - 1) / 26);
+      }
+      return col;
+    }
+
+    const sheetId = "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI";
+    const tabName = "ODT";
+    const colLetter = getColumnLetter(testNumber + 1);
+    const range = `${tabName}!${colLetter}1:${colLetter}41`;
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        return res.json();
+      })
+      .then(data => {
+        const values = data.values?.map(row => row[0]) || [];
+
+        if (!values.length || values.length < 2) {
+          box.innerText = "Not enough data.";
+          return;
+        }
+
+        const mp3Url = values[0]?.trim();
+        const words = values.slice(1).filter(w => !!w);
+
+        if (!mp3Url || !mp3Url.includes(".mp3")) {
+          box.innerText = "No valid MP3 URL found.";
+          return;
+        }
+
+        document.getElementById("audioPlayer").src = mp3Url;
+
+        // Wait 10s after audio starts, then display words every 10s
+        setTimeout(() => {
+          box.innerHTML = ""; // clear "Loading..."
+          let i = 0;
+
+          const showNext = () => {
+            if (i < words.length) {
+              const wordDiv = document.createElement("div");
+              wordDiv.className = "word";
+              wordDiv.innerText = words[i];
+              box.appendChild(wordDiv);
+
+              // Auto-scroll to the bottom
+              box.scrollTop = box.scrollHeight;
+
+              i++;
+              setTimeout(showNext, 10000);
+            } else {
+              const doneDiv = document.createElement("div");
+              doneDiv.style.marginTop = "1rem";
+              doneDiv.innerText = "Test complete!";
+              box.appendChild(doneDiv);
+              box.scrollTop = box.scrollHeight;
+            }
+          };
+
+          showNext();
+        }, 10000); // Wait 10 seconds before showing words
+      })
+      .catch(err => {
+        box.innerText = "Failed to load data.";
+        console.error("Error loading test data:", err);
+      });
+  </script>
+</body>
+</html>
