@@ -5,18 +5,34 @@
   <title>Dictation Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin: 2rem; }
-    .word-box { font-size: 2rem; margin: 1rem; }
-    .word { animation: fadeIn 1s ease-in-out; margin-bottom: 0.5rem; }
-    audio { margin-top: 2rem; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 2rem;
+      text-align: center;
+    }
+    .word-box {
+      font-size: 2rem;
+      margin-top: 2rem;
+      text-align: left;             /* Left-align the text */
+      display: inline-block;        /* So it doesn't stretch full width */
+    }
+    .word {
+      animation: fadeIn 1s ease-in-out;
+      margin-bottom: 0.5rem;
+    }
+    audio {
+      margin-top: 2rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
   <h2>Telugu Dictation Practice</h2>
-  <audio id="audioPlayer" controls autoplay></audio>
   <div id="wordBox" class="word-box">Loading...</div>
- 
+  <audio id="audioPlayer" controls autoplay></audio>
 
   <script>
     const testNumber = parseInt(new URLSearchParams(window.location.search).get("test"));
@@ -67,7 +83,7 @@
 
         document.getElementById("audioPlayer").src = mp3Url;
 
-        // Show each word after 10s delay from audio start
+        // Wait 10s after audio starts, then display words every 10s
         setTimeout(() => {
           box.innerText = ""; // clear "Loading..."
           let i = 0;
@@ -78,7 +94,7 @@
               wordDiv.innerText = words[i];
               box.appendChild(wordDiv);
               i++;
-              setTimeout(showNext, 10000); // every 10 seconds
+              setTimeout(showNext, 10000);
             } else {
               const doneDiv = document.createElement("div");
               doneDiv.style.marginTop = "1rem";
@@ -87,7 +103,7 @@
             }
           };
           showNext();
-        }, 10000); // 10s delay
+        }, 10000);
       })
       .catch(err => {
         box.innerText = "Failed to load data.";
