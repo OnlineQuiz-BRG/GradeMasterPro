@@ -31,8 +31,9 @@
 </head>
 <body>
   <h2>Telugu Dictation Practice</h2>
+  <div> <audio id="audioPlayer" controls autoplay></audio></div>
   <div id="wordBox" class="word-box">Loading...</div>
-  <audio id="audioPlayer" controls autoplay></audio>
+ 
 
   <script>
     const testNumber = parseInt(new URLSearchParams(window.location.search).get("test"));
