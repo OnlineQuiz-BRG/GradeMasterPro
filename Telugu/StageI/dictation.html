@@ -27,7 +27,7 @@
     const tabName = "ODT";
     const colLetter = String.fromCharCode(64 + parseInt(testNumber)); // B = 66 in ASCII
     const range = `${tabName}!${colLetter}1:${colLetter}41`;
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=YOUR_API_KEY`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU`;
 
     fetch(url)
       .then(res => res.json())
