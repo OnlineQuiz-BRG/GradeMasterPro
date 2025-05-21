@@ -3,35 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dictation Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/GradeMasterPro/Telugu/tStyle.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Your existing tStyle.css, plus our overrides below -->
+  <link rel="stylesheet" href="/GradeMasterPro/Telugu/tStyle.css">
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    /* 1) Full-page background */
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+    }
+    body {
+      background: url('/GradeMasterPro/Telugu/background.jpg') no-repeat center/cover;
+      font-family: Arial, sans-serif;
       position: relative;
-      text-align: center;
-      background: url('your-bg.jpg') no-repeat center/cover;
+      color: #222;
     }
 
-    /* Centered title at top */
-    h2.title {
-      margin: 1rem 0;
-      font-size: 2rem;
-      color: #000;
-    }
-
-    /* Top-right panel for Back + Logout */
+    /* 2) Top-right controls */
     .top-right-panel {
       position: absolute;
-      top: 1rem;    /* adjust up/down */
-      right: 1rem;  /* adjust left/right */
+      top: 1rem;
+      right: 1rem;
       display: flex;
-      flex-direction: column;
       gap: 0.5rem;
     }
-
     .top-right-panel a,
     .top-right-panel button {
       padding: 0.4rem 0.8rem;
@@ -40,110 +37,149 @@
       border: none;
       border-radius: 4px;
       text-decoration: none;
-      font-size: 0.9rem;
       cursor: pointer;
+      font-size: 0.9rem;
     }
 
-    /* Word box styling */
-    .word-box-container { display: flex; justify-content: center; }
+    /* 3) Main content container */
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding-top: 4rem;           /* leave space under buttons */
+    }
+
+    /* 4) Title */
+    .content h2 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+    /* 5) Audio player same width as word box */
+    audio {
+      width: 400px;
+      max-width: 90%;
+      outline: none;
+    }
+
+    /* 6) Word box styling */
     .word-box {
-    width: 80%;
-    max-width: 800px;
-    min-height: 300px;
-    height: auto;             /* let it grow */
-    overflow-y: auto;
-    padding: 1.5rem;
-    background: rgba(245,245,245,0.6);
-    color: #228B22;
-    font-size: 1.5rem;
-    text-align: left;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-    .word {
-      animation: fadeIn 1s ease-in-out;
-      margin-bottom: 0.5rem;
+      width: 400px;
+      max-width: 90%;
+      min-height: 300px;
+      overflow-y: scroll;
+      background: rgba(255,255,255,0.8);
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border-radius: 8px;
+      color: #228B22;
+      text-align: left;
+      font-size: 1.2rem;
     }
-    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+    .word-box .word {
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-
-  <!-- Centered page title -->
-  <h2 class="title">Telugu Dictation Practice</h2>
-
-  <!-- Top-right Back + Logout panel -->
+  <!-- Top-right Back + Logout -->
   <div class="top-right-panel">
     <a href="Stage1T.html">← Back to Stage 1</a>
     <button id="logoutBtn">Logout</button>
   </div>
 
-  <!-- Audio player -->
-  <audio id="audioPlayer" controls controlsList="nodownload"></audio>
-
-  <!-- Scrollable word box -->
-  <div class="word-box-container">
+  <!-- Main content -->
+  <div class="content">
+    <h2>Telugu Dictation Practice</h2>
+    <audio id="audioPlayer" controls controlsList="nodownload"></audio>
     <div id="wordBox" class="word-box">Loading...</div>
   </div>
 
   <script>
-    // 1) Guard: redirect if not logged in
+    // Redirect if not logged in
     if (localStorage.getItem('loggedIn') !== 'true') {
       window.location.href = 'login.html';
     }
 
-    // 2) Logout button
+    // Logout handler
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('loggedIn');
       window.location.href = 'login.html';
     });
 
-    // 3) Dictation logic (unchanged)
-    const testNumber = parseInt(new URLSearchParams(window.location.search).get("test"), 10);
-    const box = document.getElementById("wordBox");
+    // Dictation logic
+    const testNumber = parseInt(new URLSearchParams(location.search).get('test'), 10);
+    const box = document.getElementById('wordBox');
     if (!testNumber || testNumber < 1 || testNumber > 50) {
-      box.innerText = "Invalid test number!";
-      throw new Error("Invalid test number");
+      box.innerText = 'Invalid test number!';
+      throw new Error('Invalid test number');
     }
-    function getColumnLetter(n){let col="";while(n>0){let r=(n-1)%26;col=String.fromCharCode(65+r)+col;n=Math.floor((n-1)/26);}return col;}
-    const sheetId = "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI";
-    const colLetter = getColumnLetter(testNumber+1);
+
+    function getColumnLetter(n) {
+      let col = '';
+      while (n > 0) {
+        let rem = (n - 1) % 26;
+        col = String.fromCharCode(65 + rem) + col;
+        n = Math.floor((n - 1) / 26);
+      }
+      return col;
+    }
+
+    const sheetId = '1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI';
+    const colLetter = getColumnLetter(testNumber + 1);  // Test1→B, etc
     const range = `ODT!${colLetter}1:${colLetter}41`;
-    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
+    const apiKey = 'AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU';
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
 
     fetch(url)
       .then(r => r.ok ? r.json() : Promise.reject(r.statusText))
       .then(data => {
-        const vals = data.values?.map(r=>r[0])||[];
-        if(vals.length<2){box.innerText="Not enough data.";return;}
-        const mp3 = vals[0].trim(), words=vals.slice(1).filter(Boolean);
-        if(!mp3.includes(".mp3")){box.innerText="No valid MP3 URL found.";return;}
-        document.getElementById("audioPlayer").src = mp3;
-        setTimeout(()=>{
-          box.innerHTML="";
-          let i=0;
-          const next=()=>{
-            if(i<words.length){
-              const d=document.createElement("div");
-              d.className="word"; d.innerText=words[i++];
+        const vals = data.values?.map(r => r[0].trim()) || [];
+        if (vals.length < 2) {
+          box.innerText = 'Not enough data.';
+          return;
+        }
+        const mp3 = vals[0];
+        const words = vals.slice(1).filter(Boolean);
+        if (!mp3.includes('.mp3')) {
+          box.innerText = 'No valid MP3 URL found.';
+          return;
+        }
+        document.getElementById('audioPlayer').src = mp3;
+
+        setTimeout(() => {
+          box.innerHTML = '';
+          let i = 0;
+          const showNext = () => {
+            if (i < words.length) {
+              const d = document.createElement('div');
+              d.className = 'word';
+              d.textContent = `${i+1}. ${words[i]}`;
               box.appendChild(d);
-              box.scrollTop=box.scrollHeight;
-              setTimeout(next,10000);
+              box.scrollTop = box.scrollHeight;
+              i++;
+              setTimeout(showNext, 10000);
             } else {
-              const end=document.createElement("div");
-              end.style.marginTop="1rem"; end.innerText="Test complete!";
-              box.appendChild(end);
-              box.scrollTop=box.scrollHeight;
+              const done = document.createElement('div');
+              done.style.marginTop = '1rem';
+              done.textContent = 'Test complete!';
+              box.appendChild(done);
+              box.scrollTop = box.scrollHeight;
             }
           };
-          next();
-        },10000);
+          showNext();
+        }, 10000);
       })
-      .catch(e=>{
-        box.innerText="Failed to load data.";
-        console.error(e);
+      .catch(err => {
+        box.innerText = 'Failed to load data.';
+        console.error(err);
       });
   </script>
 </body>
