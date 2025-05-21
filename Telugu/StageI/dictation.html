@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dictation Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 2rem; }
+    .word { font-size: 2rem; margin: 1rem; animation: fadeIn 1s ease-in-out; }
+    audio { margin-top: 2rem; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+  <h2>Telugu Dictation Practice</h2>
+  <div id="wordBox" class="word">Loading...</div>
+  <audio id="audioPlayer" controls autoplay></audio>
+
+  <script>
+    const testNumber = new URLSearchParams(window.location.search).get("test");
+    if (!testNumber || testNumber < 1 || testNumber > 50) {
+      document.getElementById("wordBox").innerText = "Invalid test number!";
+      throw new Error("Invalid test number");
+    }
+
+    const sheetId = "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI";
+    const tabName = "ODT";
+    const colLetter = String.fromCharCode(64 + parseInt(testNumber)); // B = 66 in ASCII
+    const range = `${tabName}!${colLetter}1:${colLetter}41`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=YOUR_API_KEY`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const values = data.values.flat();
+        const mp3Url = values[0];
+        const words = values.slice(1);
+
+        // Set audio
+        document.getElementById("audioPlayer").src = mp3Url;
+
+        // Start word display every 10 seconds
+        let i = 0;
+        const box = document.getElementById("wordBox");
+        const showNext = () => {
+          if (i < words.length) {
+            box.innerText = words[i];
+            i++;
+            setTimeout(showNext, 10000);
+          }
+        };
+        showNext();
+      })
+      .catch(err => {
+        document.getElementById("wordBox").innerText = "Failed to load data.";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
