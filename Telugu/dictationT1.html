@@ -84,6 +84,7 @@
     <audio id="audioPlayer" controls controlsList="nodownload"></audio>
     <div id="stageInfo" class="stage-info"></div>
     <div id="wordBox" class="word-box">Loading...</div>
+    <div id="resultPanel" style="text-align:center; margin-top:2rem;"></div>
   </div>
 
   <script>
@@ -98,10 +99,13 @@
     const audio = document.getElementById('audioPlayer');
     const backBtn = document.getElementById('backBtn');
     const stageInfo = document.getElementById('stageInfo');
+    const resultPanel = document.getElementById('resultPanel');
 
-    if (!stage || stage < 1 || stage > 18 || !test || test < 1 || test > 50) {
-      wordBox.textContent = 'Invalid stage or test!';
-      throw new Error('Invalid params');
+    // Validate stage, test and codeword
+    if (!stage || stage < 1 || stage > 18 || !test || test < 1 || test > 50 || !codeword) {
+      alert("Invalid or expired session. Please log in again.");
+      localStorage.removeItem("loggedIn");
+      location.href = 'login.html';
     }
 
     backBtn.textContent = `← Back to Stage ${stage}`;
@@ -157,26 +161,24 @@
               wordBox.scrollTop = wordBox.scrollHeight;
               setTimeout(nextWord, 10000);
             } else {
-              document.querySelector('.word-box').remove();
+              wordBox.remove();
 
               const msg = document.createElement('div');
               msg.style.fontSize = '1.4rem';
               msg.style.fontWeight = 'bold';
-              msg.style.marginTop = '2rem';
-              msg.textContent = `Congratulations! Test ${test} Dictation is Complete.`;
-              document.querySelector('.content').appendChild(msg);
+              msg.style.marginBottom = '1rem';
+              msg.textContent = `🎉 Congratulations! Test ${test} Dictation is Complete.`;
 
-              // Add Record Result button
               const btn = document.createElement('button');
               btn.textContent = 'Record Result';
               btn.className = 'record-button';
               btn.onclick = () => {
-                const params = new URLSearchParams({
-                  stage, test, codeword
-                });
+                const params = new URLSearchParams({ stage, test, codeword });
                 window.location.href = `recordResult.html?${params.toString()}`;
               };
-              document.querySelector('.content').appendChild(btn);
+
+              resultPanel.appendChild(msg);
+              resultPanel.appendChild(btn);
             }
           };
           nextWord();
