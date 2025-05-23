@@ -1,75 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Record Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
-    input[type="number"] { width: 60px; text-align: center; }
-    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffaf0;
+      margin: 0; padding: 1rem;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    h2 {
+      color: #cc6600;
+    }
+    form {
+      background: #fff; padding: 1.5rem;
+      border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      display: flex; flex-direction: column;
+      gap: 1rem; width: 100%; max-width: 400px;
+    }
+    input, textarea {
+      padding: .6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+    input[type="file"] {
+      padding: 0.4rem;
+    }
+    button {
+      background: #28a745; color: white;
+      padding: .6rem; font-size: 1rem;
+      border: none; border-radius: 6px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+    .back-link {
+      margin-top: 1rem;
+      color: #0066cc;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
-  <h2>Record Test Result</h2>
+
+  <h2>Record Dictation Result</h2>
   <form id="resultForm">
-    <table>
-      <thead>
-        <tr><th>#</th><th>Correct? (1/0)</th></tr>
-      </thead>
-      <tbody id="resultTableBody"></tbody>
-    </table>
+    <label>
+      Marks (out of 40):
+      <input type="number" name="marks" min="0" max="40" required>
+    </label>
+
+    <label>
+      Remarks (optional):
+      <textarea name="remarks" rows="3"></textarea>
+    </label>
+
+    <label>
+      Upload Answer Sheet (optional):
+      <input type="file" name="file" accept="image/*">
+    </label>
+
     <button type="submit">Submit Result</button>
   </form>
 
-  <p id="statusMsg"></p>
+  <a id="backLink" class="back-link">← Back to Stage</a>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const codeword = params.get("codeword");
-    const stage = params.get("stage");
-    const test = params.get("test");
+    const ps = new URLSearchParams(location.search);
+    const stage = parseInt(ps.get('stage'), 10);
+    const test = parseInt(ps.get('test'), 10);
+    const codeword = ps.get('codeword');
 
-    const tbody = document.getElementById("resultTableBody");
-    for (let i = 1; i <= 40; i++) {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${i}</td>
-        <td><input type="number" name="word${i}" min="0" max="1" required></td>
-      `;
-      tbody.appendChild(row);
+    if (!stage || !test || !codeword) {
+      alert("Missing parameters. Returning to dashboard.");
+      location.href = 'login.html';
     }
 
-    document.getElementById("resultForm").addEventListener("submit", async function (e) {
+    document.getElementById('backLink').href = `Stage${stage}T.html`;
+
+    const form = document.getElementById('resultForm');
+
+    form.onsubmit = async (e) => {
       e.preventDefault();
-      const inputs = Array.from(document.querySelectorAll("input[type='number']"));
-      const values = [null, stage, test]; // first slot is timestamp
-      for (const input of inputs) {
-        const val = input.value;
-        if (val !== '0' && val !== '1') {
-          alert("Please enter only 1 or 0 for all fields.");
-          return;
+      const formData = new FormData(form);
+      formData.append('stage', stage);
+      formData.append('test', test);
+      formData.append('codeword', codeword);
+
+      const endpoint = 'https://script.google.com/macros/s/AKfycbz.../exec'; // ← Replace with your script URL
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          alert("✅ Result recorded successfully.");
+          location.href = `Stage${stage}T.html`;
+        } else {
+          alert("❌ Failed to record result. Try again.");
         }
-        values.push(Number(val));
+      } catch (err) {
+        console.error(err);
+        alert("Error submitting result.");
       }
-
-      const response = await fetch('AKfycbxjketurxrr9rVCfH5H6ltkJNQl2mT_9gbzEvelHakw-EvzQBpRV6FkQYSaQLQMsFDv', {
-        method: 'POST',
-        body: JSON.stringify({
-          codeword: codeword,
-          data: values
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const result = await response.json();
-      document.getElementById("statusMsg").textContent = result.status === 'Success'
-        ? "✅ Result saved successfully!"
-        : "❌ Error saving result.";
-    });
+    };
   </script>
+
 </body>
 </html>
