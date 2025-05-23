@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Record Result</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; text-align: center; border: 1px solid #ccc; }
+    input[type="number"] { width: 60px; text-align: center; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Record Test Result</h2>
+  <form id="resultForm">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Correct? (1/0)</th></tr>
+      </thead>
+      <tbody id="resultTableBody"></tbody>
+    </table>
+    <button type="submit">Submit Result</button>
+  </form>
+
+  <p id="statusMsg"></p>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const codeword = params.get("codeword");
+    const stage = params.get("stage");
+    const test = params.get("test");
+
+    const tbody = document.getElementById("resultTableBody");
+    for (let i = 1; i <= 40; i++) {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${i}</td>
+        <td><input type="number" name="word${i}" min="0" max="1" required></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    document.getElementById("resultForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const inputs = Array.from(document.querySelectorAll("input[type='number']"));
+      const values = [null, stage, test]; // first slot is timestamp
+      for (const input of inputs) {
+        const val = input.value;
+        if (val !== '0' && val !== '1') {
+          alert("Please enter only 1 or 0 for all fields.");
+          return;
+        }
+        values.push(Number(val));
+      }
+
+      const response = await fetch('YOUR_SCRIPT_WEB_APP_URL', {
+        method: 'POST',
+        body: JSON.stringify({
+          codeword: codeword,
+          data: values
+        }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const result = await response.json();
+      document.getElementById("statusMsg").textContent = result.status === 'Success'
+        ? "✅ Result saved successfully!"
+        : "❌ Error saving result.";
+    });
+  </script>
+</body>
+</html>
