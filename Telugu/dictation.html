@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dictation Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    #word {
+      font-size: 2rem;
+      font-weight: bold;
+      margin: 2rem 0;
+      opacity: 0;
+      transition: opacity 1s ease-in, transform 0.3s ease;
+    }
+    #word.bounce {
+      animation: bounce 0.5s;
+      text-decoration: underline;
+    }
+    @keyframes bounce {
+      0%   { transform: translateY(0); }
+      50%  { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    #audioPlayer {
+      margin-top: 1rem;
+    }
+    #startBtn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    #progress {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+    }
+    #wordList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .wordItem {
+      padding: 8px 12px;
+      margin: 6px;
+      border-radius: 10px;
+      background-color: #333;
+      color: #fff;
+      font-weight: bold;
+      min-width: 80px;
+      text-align: center;
+      opacity: 0.5;
+      transition: background-color 0.3s, opacity 0.3s;
+    }
+    .wordItem.active {
+      background-color: #ffcc00;
+      color: #000;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="stageInfo">Loading...</h1>
+  <button id="startBtn">Start Test</button>
+  <div id="word">---</div>
+  <div id="progress"></div>
+  <div id="wordList"></div>
+  <audio id="audioPlayer" controls></audio>
+  <audio id="bgMusic" src="https://docs.google.com/uc?export=download&id=1vNSB4GOPNB5ryzq0cL_LS62q8bXCFISv" loop></audio>
+
+  <script>
+    const stageSheetMap = {
+      1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
+      2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
+      3: "1GYLsF3Dv1dNgS6aj5X4U2bcQrBHe0Sx_8j8Y5X0wtOk",
+      4: "1tYvRRLQvle1cl1mdrwHvM0RQL0lCvdSij0y7NVE0Uug",
+      5: "1h7H4jvUZCQLubVE3XCnPehS_nN_8Vf5oPsI9Nearjxk",
+      6: "1lBa8s5xz7L0QUAUyhKSbZqnfiBDwD0unICDF1QAkVDI",
+      7: "1ZtACGJ85b5NQISrFbGp48oc-ksE6GkFx_qEClz3LGrs",
+      8: "1UnsfTc1pxqmkdYerJUW7CA_QEMdON8Jq-BeNijyA7Cg",
+      9: "1-peAZC9FsTKVK-x2owVfB-hYQV4mmi6uLcoS_gvjyDU",
+      10: "1DHrq99gPe7DZtPfApV2Dw2zZuVYNIC_5-Qkv52VkONI",
+      11: "19Z6PN_2eV-T8QnRRSgKr-prLzjFqTT7_lVVc_uy5Bys",
+      12: "12c7Sb5fFixJ1R3OjGJy4mHmfqFhfPVyYSWhdyiye9D4",
+      13: "1H6L7-CXNEKi1dkVzpXqMBwedSWDTwEtgUlVdhM4Quuk",
+      14: "1sQGv-D4m5zuyd8D2LYhuCkmTyHbw9QB0FIL5XJaaK6o",
+      15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
+      16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
+      17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
+      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const stage = parseInt(urlParams.get("stage"), 10);
+    const test = parseInt(urlParams.get("test"), 10);
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
+
+    const colLetter = (n) => {
+      let c = "";
+      while (n > 0) {
+        let r = (n - 1) % 26;
+        c = String.fromCharCode(65 + r) + c;
+        n = Math.floor((n - 1) / 26);
+      }
+      return c;
+    };
+
+    if (!stage || !test || !stageSheetMap[stage]) {
+      document.getElementById("stageInfo").textContent = "Invalid stage or test.";
+      throw new Error("Invalid input");
+    }
+
+    const sheetId = stageSheetMap[stage];
+    const col = colLetter(test + 1);
+    const range = `ODT!${col}1:${col}41`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const values = (data.values || []).map(r => r[0].trim());
+        const mp3 = values[0];
+        const words = values.slice(1).filter(Boolean);
+
+        if (!mp3.endsWith(".mp3")) {
+          alert("MP3 URL is missing or invalid");
+          return;
+        }
+
+        document.getElementById("stageInfo").textContent = `Stage ${stage} - Test ${test}`;
+        document.getElementById("audioPlayer").src = mp3;
+
+        const bgMusic = document.getElementById("bgMusic");
+        bgMusic.volume = 0.2;
+        bgMusic.play().catch(() => {});
+
+        const startBtn = document.getElementById("startBtn");
+        const wordEl = document.getElementById("word");
+        const progressEl = document.getElementById("progress");
+        const wordListEl = document.getElementById("wordList");
+
+        wordListEl.innerHTML = words.map(w => `<div class="wordItem">${w}</div>`).join("");
+
+        startBtn.disabled = false;
+        startBtn.addEventListener("click", () => {
+          startBtn.style.display = "none";
+
+          let current = 0;
+          const wordItems = document.querySelectorAll(".wordItem");
+
+          const interval = setInterval(() => {
+            if (current >= words.length) {
+              clearInterval(interval);
+              wordEl.textContent = "Test Completed!";
+              progressEl.textContent = "";
+              wordEl.style.opacity = 1;
+              return;
+            }
+
+            wordEl.textContent = words[current];
+            wordEl.classList.add("bounce");
+            wordEl.style.opacity = 1;
+            progressEl.textContent = `Word ${current + 1} of ${words.length}`;
+
+            wordItems.forEach((el, i) => {
+              el.classList.toggle("active", i === current);
+            });
+
+            setTimeout(() => {
+              wordEl.style.opacity = 0;
+              wordEl.classList.remove("bounce");
+            }, 6000);
+
+            current++;
+          }, 7000);
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to fetch dictation data.");
+      });
+  </script>
+</body>
+</html>
