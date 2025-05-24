@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 2rem;
-      background-color: #FF8C00;
+      background-color: #CFE6F2;
       color: #ffffff;
     }
     h1 {
@@ -71,13 +71,13 @@
 </head>
 <body>
   <h1 id="stageInfo">Loading...</h1>
-  <button id="startBtn">Start Test</button>
+  <audio id="audioPlayer" controls></audio>
+  <audio id="bgMusic" src="https://docs.google.com/uc?export=download&id=1vNSB4GOPNB5ryzq0cL_LS62q8bXCFISv" loop></audio>
+  <div><button id="startBtn">Start Test</button></div>
   <div id="word">---</div>
   <div id="progress"></div>
   <div id="wordList"></div>
-  <audio id="audioPlayer" controls></audio>
-  <audio id="bgMusic" src="https://docs.google.com/uc?export=download&id=1vNSB4GOPNB5ryzq0cL_LS62q8bXCFISv" loop></audio>
-
+ 
   <script>
     const stageSheetMap = {
       1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
