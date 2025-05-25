@@ -13,16 +13,6 @@
       position: relative;
       color: #222;
     }
-    .top-right-panel {
-      position: absolute; top:1rem; right:1rem;
-      display: flex; flex-direction: column; gap:.5rem;
-    }
-    .top-right-panel a,
-    .top-right-panel button {
-      padding:.4rem .8rem; background:#ff9933; color:#fff;
-      border:none; border-radius:4px; text-decoration:none;
-      cursor:pointer; font-size:.9rem; text-align:center;
-    }
     .content {
       display:flex; flex-direction:column;
       align-items:center; gap:1.5rem;
@@ -30,7 +20,7 @@
     }
     .content h2 {
       margin:0; font-size:2rem;
-      color: #e88527; /* Example: Dark Red */
+      color: #e88527;
       text-shadow:1px 1px 2px rgba(0,0,0,.2);
     }
     audio {
@@ -42,7 +32,6 @@
       color: #003366;
       margin-top: 1rem;
     }
-    /* WORD BOX */
     .word-box {
       width:400px; max-width:90%;
       height:300px;
@@ -65,12 +54,6 @@
 </head>
 <body>
 
-  <!-- Back + Logout -->
-  <div class="top-right-panel">
-    <a id="backBtn">← Back to Stage</a> -->
-   <button id="logoutBtn">Logout</button>
-  </div> 
-
   <div class="content">
     <h2>Telugu Dictation Practice</h2>
     <audio id="audioPlayer" controls controlsList="nodownload"></audio>
@@ -88,23 +71,12 @@
     const test = parseInt(ps.get('test'), 10);
     const wordBox = document.getElementById('wordBox');
     const audio = document.getElementById('audioPlayer');
-    const backBtn = document.getElementById('backBtn');
     const stageInfo = document.getElementById('stageInfo');
 
     if (!stage || stage < 1 || stage > 18 || !test || test < 1 || test > 50) {
       wordBox.textContent = 'Invalid stage or test!';
       throw new Error('Invalid params');
     }
-
-    // Setup Back button
-    backBtn.textContent = `← Back to Stage ${stage}`;
-    backBtn.href = `Stage${stage}.html`;
-
-    // Logout
-    document.getElementById('logoutBtn').onclick = () => {
-      localStorage.removeItem('loggedIn');
-      location.href = 'login.html';
-    };
 
     // Helpers
     function colLetter(n) {
@@ -138,16 +110,11 @@
           return;
         }
 
-        // Show stage and test info
         stageInfo.textContent = `Stage ${stage} - Test ${test}`;
-
-        // Set audio source
         audio.src = mp3;
 
-        // Begin dictation after short delay
         setTimeout(() => {
           wordBox.innerHTML = '';
-
           let i = 0;
           const nextWord = () => {
             if (i < words.length) {
@@ -158,7 +125,6 @@
               wordBox.scrollTop = wordBox.scrollHeight;
               setTimeout(nextWord, 10000);
             } else {
-              // remove word box and show message
               document.querySelector('.word-box').remove();
               const msg = document.createElement('div');
               msg.style.fontSize = '1.4rem';
