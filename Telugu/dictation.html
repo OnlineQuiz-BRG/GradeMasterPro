@@ -43,29 +43,6 @@
       margin-top: 1rem;
       font-size: 1.2rem;
     }
-    #wordList {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 2rem;
-    }
-    .wordItem {
-      padding: 8px 12px;
-      margin: 6px;
-      border-radius: 10px;
-      background-color: #ccffcc;
-      color: #003300;
-      font-weight: bold;
-      min-width: 80px;
-      text-align: center;
-      opacity: 0.5;
-      transition: background-color 0.3s, opacity 0.3s;
-    }
-    .wordItem.active {
-      background-color: #ffcc66;
-      color: #000;
-      opacity: 1;
-    }
   </style>
 </head>
 <body>
@@ -73,9 +50,7 @@
   <button id="startBtn">Start Test</button>
   <div id="word">---</div>
   <div id="progress"></div>
-  <div id="wordList"></div>
   <audio id="audioPlayer" controls></audio>
-  <audio id="bgMusic" src="https://docs.google.com/uc?export=download&id=1vNSB4GOPNB5ryzq0cL_LS62q8bXCFISv" loop></audio>
 
   <script>
     const stageSheetMap = {
@@ -139,23 +114,15 @@
         document.getElementById("stageInfo").textContent = `Stage ${stage} - Test ${test}`;
         document.getElementById("audioPlayer").src = mp3;
 
-        const bgMusic = document.getElementById("bgMusic");
-        bgMusic.volume = 0.2;
-        bgMusic.play().catch(() => {});
-
         const startBtn = document.getElementById("startBtn");
         const wordEl = document.getElementById("word");
         const progressEl = document.getElementById("progress");
-        const wordListEl = document.getElementById("wordList");
-
-        wordListEl.innerHTML = words.map(w => `<div class="wordItem">${w}</div>`).join("");
 
         startBtn.disabled = false;
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
 
           let current = 0;
-          const wordItems = document.querySelectorAll(".wordItem");
 
           const interval = setInterval(() => {
             if (current >= words.length) {
@@ -171,17 +138,13 @@
             wordEl.style.opacity = 1;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
 
-            wordItems.forEach((el, i) => {
-              el.classList.toggle("active", i === current);
-            });
-
             setTimeout(() => {
               wordEl.style.opacity = 0;
               wordEl.classList.remove("bounce");
-            }, 6000);
+            }, 9500); // word disappears after 9.5 sec
 
             current++;
-          }, 7000);
+          }, 10000); // next word every 10 sec
         });
       })
       .catch((err) => {
