@@ -2,64 +2,134 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dictation Test</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #fffdf6;
       color: #003300;
-      padding: 2rem;
+      padding: 1rem 1.5rem;
       text-align: center;
     }
 
     h1 {
       margin-bottom: 1rem;
+      font-size: 1.8rem;
     }
 
     #startBtn {
-      padding: 10px 20px;
-      font-size: 1rem;
+      padding: 12px 25px;
+      font-size: 1.2rem;
       margin: 20px;
       cursor: pointer;
+      border-radius: 6px;
+      border: 1px solid #4CAF50;
+      background-color: #d4f0d4;
+      color: #004d00;
+      transition: background-color 0.3s ease;
+    }
+    #startBtn:hover {
+      background-color: #a4dca4;
     }
 
     #progress {
-      font-size: 1.1rem;
+      font-size: 1.3rem;
       margin-top: 1rem;
+      min-height: 1.8rem;
+      color: #2e7d32;
+      font-weight: 600;
     }
 
     #audioPlayer {
       margin: 1.5rem 0;
+      width: 90%;
+      max-width: 600px;
+      outline: none;
     }
 
     #wordBox {
       max-height: 400px;
       overflow-y: auto;
       margin: 0 auto;
-      padding: 1rem;
-      width: 90%;
-      max-width: 600px;
+      padding: 1rem 1rem;
+      width: 320px; /* narrower width */
+      max-width: 90vw; /* responsive */
       border: 2px solid #ddd;
       border-radius: 10px;
       background-color: #fafafa;
       text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-sizing: border-box;
+      scrollbar-width: thin; /* Firefox */
+      scrollbar-color: #4caf50 #e0e0e0;
+    }
+
+    /* Scrollbar styles for Webkit browsers */
+    #wordBox::-webkit-scrollbar {
+      width: 8px;
+    }
+    #wordBox::-webkit-scrollbar-track {
+      background: #e0e0e0;
+      border-radius: 10px;
+    }
+    #wordBox::-webkit-scrollbar-thumb {
+      background-color: #4caf50;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
     }
 
     .wordCard {
       background: #f0f8ff;
       padding: 10px 15px;
-      margin-bottom: 10px;
-      border-left: 5px solid #4CAF50;
+      border-left: 5px solid #4caf50;
       border-radius: 8px;
       box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      font-size: 1.3rem;
+      line-height: 1.4;
+      user-select: none;
       transition: background-color 0.5s, transform 0.3s;
+      font-weight: 400;
     }
 
     .highlight {
       background-color: #fff3c4;
       border-left-color: #ff9800;
-      transform: scale(1.02);
+      font-weight: 700;
+      transform: scale(1.03);
+    }
+
+    /* Responsive font sizes for various devices */
+    @media (max-width: 480px) {
+      #wordBox {
+        width: 90vw;
+        max-height: 300px;
+      }
+      .wordCard {
+        font-size: 1.5rem;
+        padding: 12px 18px;
+      }
+    }
+    @media (min-width: 481px) and (max-width: 1024px) {
+      #wordBox {
+        width: 400px;
+        max-height: 350px;
+      }
+      .wordCard {
+        font-size: 1.4rem;
+        padding: 11px 16px;
+      }
+    }
+    @media (min-width: 1025px) {
+      #wordBox {
+        width: 320px;
+        max-height: 400px;
+      }
+      .wordCard {
+        font-size: 1.3rem;
+      }
     }
   </style>
 </head>
@@ -98,6 +168,7 @@
     const test = parseInt(urlParams.get("test"), 10);
     const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
 
+    // Converts 1-based index to Excel-like column letter (e.g. 1 => A)
     const colLetter = (n) => {
       let c = "";
       while (n > 0) {
@@ -156,13 +227,14 @@
             wordCard.textContent = `${current + 1}. ${words[current]}`;
 
             if (previousCard) previousCard.classList.remove("highlight");
-            wordBox.appendChild(wordCard);
-            wordBox.scrollTop = wordBox.scrollHeight;
+            // PREPEND new word at the TOP
+            wordBox.prepend(wordCard);
+            // Do NOT scroll, user controls scrolling
 
             previousCard = wordCard;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000); // One word every 10 seconds
+          }, 10000); // 10 seconds per word
         });
       })
       .catch((err) => {
