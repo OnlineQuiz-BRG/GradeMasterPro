@@ -15,23 +15,6 @@
     h1 {
       margin-bottom: 1rem;
     }
-    #wordList {
-      max-width: 500px;
-      margin: 2rem auto;
-      text-align: left;
-      font-size: 1.5rem;
-    }
-    .wordItem {
-      background: #e0ffe0;
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 8px;
-      animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
     #startBtn {
       padding: 10px 20px;
       font-size: 1rem;
@@ -43,7 +26,24 @@
       font-size: 1.2rem;
     }
     #audioPlayer {
+      margin: 1.5rem 0;
+    }
+    #wordList {
+      max-height: 300px;
+      overflow-y: auto;
+      border-top: 2px solid #ccc;
       margin-top: 1rem;
+      padding-top: 1rem;
+    }
+    .wordItem {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      animation: fadeIn 0.7s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -51,8 +51,8 @@
   <h1 id="stageInfo">Loading...</h1>
   <button id="startBtn">Start Test</button>
   <div id="progress"></div>
-  <div id="wordList"></div>
   <audio id="audioPlayer" controls></audio>
+  <div id="wordList"></div>
 
   <script>
     const stageSheetMap = {
@@ -104,7 +104,7 @@
     fetch(url)
       .then(res => res.json())
       .then(data => {
-        const values = (data.values || []).map(r => r[0].trim());
+        const values = (data.values || []).map(r => r[0]?.trim());
         const mp3 = values[0];
         const words = values.slice(1).filter(Boolean);
 
@@ -119,36 +119,29 @@
         const startBtn = document.getElementById("startBtn");
         const wordList = document.getElementById("wordList");
         const progressEl = document.getElementById("progress");
-        const audio = document.getElementById("audioPlayer");
 
         startBtn.disabled = false;
-
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
-          audio.play();
 
           let current = 0;
-
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
-              const endMsg = document.createElement("div");
-              endMsg.className = "wordItem";
-              endMsg.textContent = "✅ Test Completed!";
-              wordList.prepend(endMsg);
-              progressEl.textContent = "";
+              progressEl.textContent = "Test Completed!";
               return;
             }
 
-            const word = words[current];
-            const item = document.createElement("div");
-            item.className = "wordItem";
-            item.textContent = `${current + 1}. ${word}`;
-            wordList.prepend(item);
+            const wordDiv = document.createElement("div");
+            wordDiv.className = "wordItem";
+            wordDiv.textContent = words[current];
+
+            // Prepend to the top
+            wordList.insertBefore(wordDiv, wordList.firstChild);
 
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000); // every 10 seconds
+          }, 10000); // Show a word every 10 seconds
         });
       })
       .catch((err) => {
