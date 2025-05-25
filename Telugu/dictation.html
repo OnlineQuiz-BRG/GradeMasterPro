@@ -12,38 +12,56 @@
       background-color: #fff8f0;
       color: #003300;
     }
+
     h1 {
       margin-bottom: 1rem;
     }
+
     #startBtn {
       padding: 10px 20px;
       font-size: 1rem;
       margin-top: 20px;
       cursor: pointer;
     }
+
     #progress {
       margin-top: 1rem;
       font-size: 1.2rem;
     }
+
     #audioPlayer {
       margin: 1.5rem 0;
     }
+
     #wordList {
-      max-height: 300px;
+      max-height: 400px;
       overflow-y: auto;
       border-top: 2px solid #ccc;
       margin-top: 1rem;
       padding-top: 1rem;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 1rem;
     }
-    .wordItem {
-      font-size: 1.8rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
-      animation: fadeIn 0.7s ease;
+
+    .wordCard {
+      font-size: 1.5rem;
+      background: #f9f9f9;
+      border-left: 5px solid #4CAF50;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: left;
+      margin: 0 auto;
+      width: 90%;
+      max-width: 500px;
+      transition: background-color 0.5s, transform 0.3s;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .highlight {
+      background-color: #fffcc2;
+      border-left-color: #ff9800;
+      transform: scale(1.02);
     }
   </style>
 </head>
@@ -125,6 +143,8 @@
           startBtn.style.display = "none";
 
           let current = 0;
+          let previousCard = null;
+
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
@@ -132,16 +152,21 @@
               return;
             }
 
-            const wordDiv = document.createElement("div");
-            wordDiv.className = "wordItem";
-            wordDiv.textContent = words[current];
+            const wordCard = document.createElement("div");
+            wordCard.className = "wordCard highlight";
+            wordCard.textContent = `${current + 1}. ${words[current]}`;
 
-            // Prepend to the top
-            wordList.insertBefore(wordDiv, wordList.firstChild);
+            // Remove highlight from previous card
+            if (previousCard) previousCard.classList.remove("highlight");
 
+            // Insert new word at the top
+            wordList.appendChild(wordCard);
+            wordList.scrollTop = wordList.scrollHeight;
+
+            previousCard = wordCard;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000); // Show a word every 10 seconds
+          }, 10000); // One word every 10 seconds
         });
       })
       .catch((err) => {
