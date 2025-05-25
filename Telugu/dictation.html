@@ -219,9 +219,10 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
+              wordBox.innerHTML = "";  // Clear all displayed words
               return;
             }
-
+            
             const wordCard = document.createElement("div");
             wordCard.className = "wordCard highlight";
             wordCard.textContent = `${current + 1}. ${words[current]}`;
