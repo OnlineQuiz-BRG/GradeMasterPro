@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dictation Test</title>
   <style>
     body {
@@ -15,23 +15,22 @@
     h1 {
       margin-bottom: 1rem;
     }
-    #word {
-      font-size: 2rem;
-      font-weight: bold;
-      margin: 2rem 0;
-      opacity: 0;
-      transition: opacity 1s ease-in, transform 0.3s ease;
+    #wordList {
+      max-width: 500px;
+      margin: 2rem auto;
+      text-align: left;
+      font-size: 1.5rem;
     }
-    #word.bounce {
-      animation: bounce 0.5s;
+    .wordItem {
+      background: #e0ffe0;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 8px;
+      animation: fadeIn 0.5s ease-in;
     }
-    @keyframes bounce {
-      0%   { transform: translateY(0); }
-      50%  { transform: translateY(-10px); }
-      100% { transform: translateY(0); }
-    }
-    #audioPlayer {
-      margin-top: 1rem;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     #startBtn {
       padding: 10px 20px;
@@ -43,13 +42,16 @@
       margin-top: 1rem;
       font-size: 1.2rem;
     }
+    #audioPlayer {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1 id="stageInfo">Loading...</h1>
   <button id="startBtn">Start Test</button>
-  <div id="word">---</div>
   <div id="progress"></div>
+  <div id="wordList"></div>
   <audio id="audioPlayer" controls></audio>
 
   <script>
@@ -115,36 +117,38 @@
         document.getElementById("audioPlayer").src = mp3;
 
         const startBtn = document.getElementById("startBtn");
-        const wordEl = document.getElementById("word");
+        const wordList = document.getElementById("wordList");
         const progressEl = document.getElementById("progress");
+        const audio = document.getElementById("audioPlayer");
 
         startBtn.disabled = false;
+
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
+          audio.play();
 
           let current = 0;
 
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
-              wordEl.textContent = "Test Completed!";
+              const endMsg = document.createElement("div");
+              endMsg.className = "wordItem";
+              endMsg.textContent = "✅ Test Completed!";
+              wordList.prepend(endMsg);
               progressEl.textContent = "";
-              wordEl.style.opacity = 1;
               return;
             }
 
-            wordEl.textContent = words[current];
-            wordEl.classList.add("bounce");
-            wordEl.style.opacity = 1;
+            const word = words[current];
+            const item = document.createElement("div");
+            item.className = "wordItem";
+            item.textContent = `${current + 1}. ${word}`;
+            wordList.prepend(item);
+
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
-
-            setTimeout(() => {
-              wordEl.style.opacity = 0;
-              wordEl.classList.remove("bounce");
-            }, 9500); // word disappears after 9.5 sec
-
             current++;
-          }, 10000); // next word every 10 sec
+          }, 10000); // every 10 seconds
         });
       })
       .catch((err) => {
