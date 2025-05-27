@@ -1,104 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Record Test Result</title>
+  <meta charset="UTF-8">
+  <title>Submit Dictation Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f8f9fa;
       padding: 20px;
+      background-color: #f2f9ff;
     }
+
     h2 {
       text-align: center;
+      color: #333;
     }
-    .form-section {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    .input-group {
+      margin: 15px 0;
     }
+
     label {
       display: block;
-      margin-top: 15px;
+      margin-bottom: 5px;
       font-weight: bold;
     }
-    input[type="text"], input[type="date"], input[type="number"] {
+
+    input[type="text"], input[type="number"] {
       width: 100%;
       padding: 8px;
-      margin-top: 5px;
+      font-size: 16px;
       box-sizing: border-box;
     }
-    .results-grid {
+
+    .grid {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 5px;
-      margin-top: 15px;
-    }
-    .results-grid input {
-      width: 100%;
-      text-align: center;
-      padding: 5px;
-    }
-    button {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
       margin-top: 20px;
-      width: 100%;
-      padding: 10px;
-      background-color: #28a745;
-      border: none;
-      color: white;
+    }
+
+    .grid label {
+      font-weight: normal;
+      font-size: 14px;
+    }
+
+    .submit-btn {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    button {
+      padding: 12px 24px;
       font-size: 16px;
-      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
     }
+
     button:hover {
-      background-color: #218838;
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
 
-  <div class="form-section">
-    <h2>Record Test Result</h2>
-    
-    <form id="resultForm">
-      <label for="date">Date</label>
-      <input type="date" id="date" name="date" required>
+  <h2>Submit Dictation Test Result</h2>
 
-      <label for="codeword">Logged-in Codeword</label>
-      <input type="text" id="codeword" name="codeword" required>
+  <div class="input-group">
+    <label for="codeword">Codeword</label>
+    <input type="text" id="codeword" placeholder="Enter student codeword" required>
+  </div>
 
-      <label for="stage">Stage Number</label>
-      <input type="number" id="stage" name="stage" min="1" required>
+  <div class="input-group">
+    <label for="stageNumber">Stage Number</label>
+    <input type="number" id="stageNumber" placeholder="Enter stage number" required>
+  </div>
 
-      <label for="test">Test Number</label>
-      <input type="number" id="test" name="test" min="1" required>
+  <div class="input-group">
+    <label for="testNumber">Test Number</label>
+    <input type="number" id="testNumber" placeholder="Enter test number" required>
+  </div>
 
-      <label>Result (Enter 1 for correct, 0 for incorrect)</label>
-      <div class="results-grid" id="resultsGrid">
-        <!-- 40 result fields -->
-        <!-- These will be filled using JS below -->
-      </div>
+  <h3>Mark each word as 1 (Correct) or 0 (Incorrect)</h3>
+  <div class="grid">
+    <!-- Dynamically generate 40 input fields -->
+    <script>
+      for (let i = 1; i <= 40; i++) {
+        document.write(`
+          <div>
+            <label for="q${i}">Word ${i}</label>
+            <input type="number" id="q${i}" min="0" max="1" value="0">
+          </div>
+        `);
+      }
+    </script>
+  </div>
 
-      <button type="submit">Submit Result</button>
-    </form>
+  <div class="submit-btn">
+    <button onclick="submitResult()">Submit Result</button>
   </div>
 
   <script>
-    // Populate 40 input fields for result
-    const resultsGrid = document.getElementById('resultsGrid');
-    for (let i = 1; i <= 40; i++) {
-      const input = document.createElement('input');
-      input.type = 'number';
-      input.name = 'result' + i;
-      input.min = 0;
-      input.max = 1;
-      input.placeholder = i;
-      input.required = true;
-      resultsGrid.appendChild(input);
+    function submitResult() {
+      const codeword = document.getElementById('codeword').value.trim();
+      const stageNumber = document.getElementById('stageNumber').value.trim();
+      const testNumber = document.getElementById('testNumber').value.trim();
+
+      if (!codeword || !stageNumber || !testNumber) {
+        alert("Please fill in all fields before submitting.");
+        return;
+      }
+
+      const result = [];
+      for (let i = 1; i <= 40; i++) {
+        const val = document.getElementById('q' + i).value;
+        result.push(val === '1' ? 1 : 0);
+      }
+
+      const payload = {
+        codeword: codeword,
+        testInfo: {
+          date: new Date().toLocaleDateString("en-GB"),
+          stageNumber: stageNumber,
+          testNumber: testNumber
+        },
+        result: result
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbyEIyy9xMj8r6MMUlV7R99YKCfqxdi4xtXvE4Hnt_XSB4cL-zju4m4gzIMF-QDxuHsDIw/exec', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => res.text())
+      .then(response => {
+        alert("Submission successful!");
+      })
+      .catch(err => {
+        alert("Error submitting: " + err);
+      });
     }
   </script>
 
