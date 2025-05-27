@@ -2,6 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stage 1 - Dictation Tests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff8f0;
+      color: #003300;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    #buttonContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .testBtn {
+      padding: 1rem 1.5rem;
+      font-size: 1.2rem;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .testBtn:hover {
+      background-color: #005f47;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Stage 1 - Dictation Tests</h1>
+  <p>Select a test to begin:</p>
+  <div id="buttonContainer"></div>
+  <div id="errorMsg" class="error"></div>
+
+  <script>
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    const codeword = getQueryParam("codeword");
+    const container = document.getElementById("buttonContainer");
+    const errorMsg = document.getElementById("errorMsg");
+
+    if (!codeword) {
+      errorMsg.textContent = "Error: Codeword not found in URL. Please return to the previous page.";
+    } else {
+      const totalTests = 50;
+      for (let i = 1; i <= totalTests; i++) {
+        const btn = document.createElement("button");
+        btn.className = "testBtn";
+        btn.textContent = `Test ${i}`;
+        btn.addEventListener("click", () => {
+          const url = `dictationT.html?stage=1&test=${i}&codeword=${encodeURIComponent(codeword)}`;
+          window.location.href = url;
+        });
+        container.appendChild(btn);
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Telugu Dictation Practice</title>
   <link rel="stylesheet" href="/GradeMasterPro/Telugu/Testing/tStyle.css" />
@@ -113,7 +199,8 @@
   <div class="container">
 
     <!-- Title Card -->
-    <div class="title-card">
+ <!--
+<div class="title-card">
       <h1 class="main-title">Welcome to Stage - I Dictation Practice</h1>
       <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
     </div>
@@ -121,17 +208,18 @@
     <h2 class="sub-title">Practice 2 to 3 Tests daily</h2>
 
     <!-- Daily Dictation Card -->
-    <div class="card stage-card">
+  <!--
+<div class="card stage-card">
       <h3><strong>Stage - I</strong></h3>
       <div class="stage-buttons">
         <!-- Buttons will be generated here by JavaScript -->
-      </div>
+ <!--     </div>
     </div>
 
   </div>
   
 </body>
-</html>
+</html> -->
 
 
 
