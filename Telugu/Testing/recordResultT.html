@@ -9,49 +9,39 @@
       font-family: Arial, sans-serif;
       padding: 20px;
       background-color: #f2f9ff;
-      max-width: 800px;
-      margin: auto;
     }
-
-    h2, h3 {
+    h2 {
       text-align: center;
       color: #333;
     }
-
     .input-group {
       margin: 15px 0;
     }
-
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
     }
-
     input[type="text"], input[type="number"] {
       width: 100%;
       padding: 8px;
       font-size: 16px;
       box-sizing: border-box;
     }
-
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 10px;
       margin-top: 20px;
     }
-
     .grid label {
       font-weight: normal;
       font-size: 14px;
     }
-
     .submit-btn {
       margin-top: 30px;
       text-align: center;
     }
-
     button {
       padding: 12px 24px;
       font-size: 16px;
@@ -61,7 +51,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
     button:hover {
       background-color: #0056b3;
     }
@@ -72,32 +61,36 @@
   <h2>Submit Dictation Test Result</h2>
 
   <div class="input-group">
-    <label for="codeword">Student Codeword</label>
-    <input type="text" id="codeword" placeholder="Enter student codeword" required>
+    <label for="codeword">Codeword</label>
+    <input type="text" id="codeword" readonly>
   </div>
 
   <div class="input-group">
     <label for="stageNumber">Stage Number</label>
-    <input type="number" id="stageNumber" placeholder="Enter stage number" required>
+    <input type="number" id="stageNumber" readonly>
   </div>
 
   <div class="input-group">
     <label for="testNumber">Test Number</label>
-    <input type="number" id="testNumber" placeholder="Enter test number" required>
+    <input type="number" id="testNumber" readonly>
   </div>
 
   <h3>Mark each word as 1 (Correct) or 0 (Incorrect)</h3>
-  <div class="grid" id="wordGrid">
-    <!-- Dynamically insert inputs here -->
-  </div>
+  <div class="grid" id="gridContainer"></div>
 
   <div class="submit-btn">
     <button onclick="submitResult()">Submit Result</button>
   </div>
 
   <script>
-    // Generate 40 word input fields dynamically
-    const grid = document.getElementById('wordGrid');
+    // Autofill data from URL (passed from loginT.html or dictationT.html)
+    const urlParams = new URLSearchParams(window.location.search);
+    document.getElementById('codeword').value = urlParams.get('codeword') || '';
+    document.getElementById('stageNumber').value = urlParams.get('stage') || '';
+    document.getElementById('testNumber').value = urlParams.get('test') || '';
+
+    // Create 40 input fields
+    const grid = document.getElementById('gridContainer');
     for (let i = 1; i <= 40; i++) {
       const div = document.createElement('div');
       div.innerHTML = `
@@ -113,7 +106,7 @@
       const testNumber = document.getElementById('testNumber').value.trim();
 
       if (!codeword || !stageNumber || !testNumber) {
-        alert("Please fill in all fields before submitting.");
+        alert("Codeword, Stage, or Test number is missing.");
         return;
       }
 
@@ -133,10 +126,7 @@
         result: result
       };
 
-      // Replace this with your actual deployed Apps Script Web App URL
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbxjMXATNKV8YPK52lO1dgzrPpZKY2HJg1ASh-IwXLoVPSo9GgYOV6d_fbJtVjNNQrXX1w/exec';
-
-      fetch(scriptURL, {
+      fetch('https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxp2ZRWG9RZ6M8OkI_pMekg8K__IcMM4xnElSn5RYMU4BnHKt9ulnGSVvumkn0EyA/exec', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: { 'Content-Type': 'application/json' }
@@ -146,7 +136,7 @@
         alert("✅ Submission successful!");
       })
       .catch(err => {
-        alert("❌ Error submitting: " + err.message);
+        alert("❌ Error submitting: " + err);
       });
     }
   </script>
