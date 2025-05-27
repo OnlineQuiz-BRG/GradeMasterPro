@@ -35,14 +35,6 @@
       display: block;
     }
 
-    audio::-internal-media-controls-download-button {
-      display: none;
-    }
-
-    audio::-webkit-media-controls-enclosure {
-      overflow: hidden;
-    }
-
     #progress {
       margin: 1rem 0;
       font-size: 1.1rem;
@@ -61,35 +53,67 @@
       border-radius: 10px;
       background: #fff;
     }
-.wordCard {
-  background-color: #f8fff8;
-  border-left: 5px solid #cccccc;
-  padding: 12px;
-  margin-bottom: 10px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
 
-.highlight {
-  background-color: #e1ffe6;
-  border-left: 7px solid #0c8b3f; /* thick green border */
-  box-shadow: 0 0 10px rgba(0, 128, 0, 0.3);
-}
-  /* .wordCard {
-      background-color: #f0fff0;
-      border-left: 5px solid #007b5e;
-      padding: 10px;
-      margin-bottom: 8px;
-      font-size: 1.3rem;
+    .wordCard {
+      background-color: #f8fff8;
+      border-left: 5px solid #cccccc;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
       font-weight: bold;
-      border-radius: 4px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
     }
 
     .highlight {
-      background-color: #d6f5d6;
-    }*/
+      background-color: #e1ffe6;
+      border-left: 7px solid #0c8b3f;
+      box-shadow: 0 0 10px rgba(0, 128, 0, 0.3);
+    }
+
+    /* Record Result Form Styling */
+    #resultForm {
+      display: none;
+      margin-top: 2rem;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    #resultForm h2 {
+      color: #cc6600;
+      text-align: center;
+    }
+
+    #resultForm input,
+    #resultForm textarea {
+      width: 100%;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+    }
+
+    #resultForm button {
+      background: #28a745;
+      color: white;
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #resultForm button:hover {
+      background: #218838;
+    }
   </style>
 </head>
 <body>
@@ -98,6 +122,16 @@
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
+
+  <!-- Record Result Form -->
+  <form id="resultForm" onsubmit="submitResult(event)">
+    <h2>Record Your Result</h2>
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="text" name="class" placeholder="Class/Grade" required />
+    <textarea name="feedback" rows="3" placeholder="Any feedback (optional)"></textarea>
+    <input type="file" name="upload" accept="image/*,application/pdf" />
+    <button type="submit">Submit Result</button>
+  </form>
 
   <script>
     const stageSheetMap = {
@@ -176,7 +210,8 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
-              wordBox.innerHTML = ""; // Clear words after test completes
+              wordBox.innerHTML = "";
+              document.getElementById("resultForm").style.display = "block";
               return;
             }
 
@@ -185,18 +220,24 @@
             wordCard.textContent = `${current + 1}. ${words[current]}`;
 
             if (previousCard) previousCard.classList.remove("highlight");
-            wordBox.prepend(wordCard); // Add new word to top
+            wordBox.prepend(wordCard);
             previousCard = wordCard;
 
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000); // new word every 10 seconds
+          }, 10000);
         });
       })
       .catch(err => {
         console.error(err);
         alert("Failed to fetch dictation data.");
       });
+
+    function submitResult(event) {
+      event.preventDefault();
+      alert("Thank you! Your result has been submitted.");
+      document.getElementById("resultForm").reset();
+    }
   </script>
 </body>
 </html>
