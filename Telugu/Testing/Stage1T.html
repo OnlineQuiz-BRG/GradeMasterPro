@@ -5,6 +5,144 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Telugu Dictation Practice</title>
   <link rel="stylesheet" href="/GradeMasterPro/Telugu/Testing/tStyle.css" />
+  <style>
+    /* Minimal inline styles for layout - adjust or remove if using your external CSS */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 1rem;
+      background: #f9f9f9;
+      color: #222;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .title-card {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .main-title {
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: #555;
+    }
+    .sub-title {
+      margin: 1.5rem 0 1rem;
+      font-weight: bold;
+      font-size: 1.3rem;
+      text-align: center;
+      color: #333;
+    }
+    .stage-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    .stage-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .card-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+    .card-button:hover {
+      background-color: #45a049;
+    }
+    #logoutBtn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      user-select: none;
+    }
+    #logoutBtn:hover {
+      background: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="logoutBtn" title="Logout">Logout</button>
+
+  <script>
+    // Redirect to login page if not logged in
+    if (localStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/loginT.html';
+    }
+
+    // Logout button functionality
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('loggedIn');
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/loginT.html';
+    });
+
+    // Dynamically generate test buttons 1 to 50
+    function createTestButtons(stage, totalTests) {
+      const container = document.querySelector('.stage-buttons');
+      for (let i = 1; i <= totalTests; i++) {
+        const a = document.createElement('a');
+        a.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=${stage}&test=${i}`;
+        a.className = 'card-button';
+        a.textContent = `Test ${i}`;
+        container.appendChild(a);
+      }
+    }
+
+    createTestButtons(1, 50);
+  </script>
+
+  <div class="container">
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <h1 class="main-title">Welcome to Stage - I Dictation Practice</h1>
+      <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
+    </div>
+  
+    <h2 class="sub-title">Practice 2 to 3 Tests daily</h2>
+
+    <!-- Daily Dictation Card -->
+    <div class="card stage-card">
+      <h3><strong>Stage - I</strong></h3>
+      <div class="stage-buttons">
+        <!-- Buttons will be generated here by JavaScript -->
+      </div>
+    </div>
+
+  </div>
+  
+</body>
+</html>
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telugu Dictation Practice</title>
+  <link rel="stylesheet" href="/GradeMasterPro/Telugu/Testing/tStyle.css" />
 </head>
 <body>
 
@@ -26,7 +164,7 @@
   <div class="container">
 
     <!-- Title Card -->
-    <div class="title-card">
+<!--    <div class="title-card">
       <h1 class="main-title">Welcome to Stage - I Dictation Practice</h1>
       <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
     </div>
@@ -34,7 +172,7 @@
       <h2 class="sub-title">Practice 2 to 3 Tests daily</h2>
 
     <!-- Daily Dictation Card -->
-    <div class="card stage-card">
+<!--     <div class="card stage-card">
       <h3><strong>Stage - I</strong></h3>
       <div class="stage-buttons">
         
@@ -97,4 +235,4 @@
 
   </div>
 </body>
-</html>
+</html> 
