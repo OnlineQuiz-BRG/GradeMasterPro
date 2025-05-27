@@ -147,9 +147,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Record Result</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Baloo 2', cursive;
@@ -158,7 +158,7 @@
       color: #333;
     }
     .container {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
       padding: 20px;
       background: white;
@@ -171,15 +171,15 @@
     }
     label {
       display: block;
-      margin-top: 15px;
+      margin-top: 10px;
       font-weight: bold;
     }
     input[type="text"], input[type="number"] {
       width: 100%;
-      padding: 10px;
+      padding: 8px;
       margin-top: 5px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
     }
     button {
       margin-top: 20px;
@@ -196,6 +196,12 @@
       font-size: 18px;
       color: #006600;
       font-weight: bold;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
   </style>
 </head>
@@ -205,13 +211,17 @@
     <div id="studentName">Welcome, Student!</div>
     <form id="resultForm">
       <label for="codeword">Codeword</label>
-      <input type="text" id="codeword" name="codeword" readonly>
+      <input type="text" id="codeword" name="codeword" readonly />
 
-      <label for="setNumber">Set Number</label>
-      <input type="text" id="setNumber" name="setNumber" placeholder="e.g. 12">
+      <label for="stage">Stage Number</label>
+      <input type="text" id="stage" name="stage" readonly />
 
-      <label for="score">Score</label>
-      <input type="number" id="score" name="score" placeholder="e.g. 37">
+      <label for="setNumber">Test Number</label>
+      <input type="text" id="setNumber" name="setNumber" readonly />
+
+      <div class="grid" id="wordScores">
+        <!-- 40 word input boxes will be inserted here -->
+      </div>
 
       <button type="submit">Submit Result</button>
     </form>
@@ -220,49 +230,91 @@
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const codeInput = document.getElementById("codeword");
+      const stageInput = document.getElementById("stage");
+      const setInput = document.getElementById("setNumber");
       const nameDisplay = document.getElementById("studentName");
 
       const savedCode = localStorage.getItem("codeword");
       const savedName = localStorage.getItem("studentName");
+      const savedStage = localStorage.getItem("stage");
+      const savedTest = localStorage.getItem("test");
 
-      if (!savedCode) {
-        alert("You are not logged in. Please log in first.");
+      if (!savedCode || !savedStage || !savedTest) {
+        alert("You are not logged in properly. Please log in first.");
         window.location.href = "loginT.html";
         return;
       }
 
       codeInput.value = savedCode;
+      stageInput.value = savedStage;
+      setInput.value = savedTest;
 
       if (savedName) {
         nameDisplay.textContent = "Welcome, " + savedName + "!";
+      }
+
+      // Generate 40 input boxes
+      const wordScoresDiv = document.getElementById("wordScores");
+      for (let i = 1; i <= 40; i++) {
+        const label = document.createElement("label");
+        label.textContent = `Word ${i}`;
+        const input = document.createElement("input");
+        input.type = "number";
+        input.name = `word${i}`;
+        input.min = 0;
+        input.max = 1;
+        input.placeholder = "0 or 1";
+        wordScoresDiv.appendChild(label);
+        wordScoresDiv.appendChild(input);
       }
     });
 
     document.getElementById("resultForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const code = document.getElementById("codeword").value.trim();
-      const set = document.getElementById("setNumber").value.trim();
-      const score = document.getElementById("score").value.trim();
 
-      if (!set || !score) {
-        alert("Please fill in all fields.");
-        return;
+      const code = document.getElementById("codeword").value;
+      const stage = document.getElementById("stage").value;
+      const test = document.getElementById("setNumber").value;
+
+      const wordScores = [];
+      for (let i = 1; i <= 40; i++) {
+        const val = document.querySelector(`[name="word${i}"]`).value;
+        if (val === "") {
+          alert(`Please enter result for Word ${i}`);
+          return;
+        }
+        wordScores.push(parseInt(val));
       }
 
-      const response = await fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxp2ZRWG9RZ6M8OkI_pMekg8K__IcMM4xnElSn5RYMU4BnHKt9ulnGSVvumkn0EyA/exec", {
-        method: "POST",
-        body: JSON.stringify({ codeword: code, setNumber: set, score: score }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const totalScore = wordScores.reduce((a, b) => a + b, 0);
 
-      const result = await response.json();
-      if (result.success) {
-        alert("Result recorded successfully!");
-        document.getElementById("resultForm").reset();
-      } else {
-        alert("Failed to record result. Please try again.");
+      const payload = {
+        codeword: code,
+        stage: stage,
+        testNumber: test,
+        score: totalScore,
+        words: wordScores
+      };
+
+      try {
+        const response = await fetch("https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxp2ZRWG9RZ6M8OkI_pMekg8K__IcMM4xnElSn5RYMU4BnHKt9ulnGSVvumkn0EyA/exec", {
+          method: "POST",
+          body: JSON.stringify(payload),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert("Result submitted successfully!");
+          document.getElementById("resultForm").reset();
+        } else {
+          alert("Submission failed. Please try again.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error submitting result.");
       }
     });
   </script>
