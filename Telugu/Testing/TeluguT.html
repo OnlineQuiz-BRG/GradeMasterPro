@@ -30,6 +30,14 @@
       <h1 class="main-title">Welcome to Telugu Dictation Practice</h1>
       <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
     </div>
+<h2 id="welcomeMessage"></h2>
+
+<script>
+  const name = localStorage.getItem("studentName");
+  if (name) {
+    document.getElementById("welcomeMessage").textContent = "Welcome, " + name + "!";
+  }
+</script>
 
     <!-- Programme Details Card -->
  <!--   <div class="card">
