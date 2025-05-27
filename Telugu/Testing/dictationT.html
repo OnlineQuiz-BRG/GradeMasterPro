@@ -66,9 +66,9 @@
     }
 
     .highlight {
-      background-color: #e1ffe6;
-      border-left: 7px solid #0c8b3f;
-      box-shadow: 0 0 10px rgba(0, 128, 0, 0.3);
+      background-color: #ffe8cc;
+      border-left: 7px solid #ff9900;
+      box-shadow: 0 0 10px rgba(255, 153, 0, 0.4);
     }
   </style>
 </head>
@@ -141,7 +141,8 @@
         }
 
         document.getElementById("stageInfo").textContent = `Stage ${stage} - Test ${test}`;
-        document.getElementById("audioPlayer").src = mp3;
+        const audioPlayer = document.getElementById("audioPlayer");
+        audioPlayer.src = mp3;
 
         const startBtn = document.getElementById("startBtn");
         const submitBtn = document.getElementById("submitBtn");
@@ -159,7 +160,9 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
-              submitBtn.style.display = "inline-block";
+              wordBox.innerHTML = ""; // ✅ Clear all previous words
+              audioPlayer.style.display = "none"; // ✅ Hide audio player
+              submitBtn.style.display = "inline-block"; // ✅ Show submit
               return;
             }
 
