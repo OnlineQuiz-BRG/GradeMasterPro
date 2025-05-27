@@ -121,16 +121,23 @@
         return;
       }
 
-      const response = await fetch("https://script.google.com/macros/s/AKfycbyw9gDYSDj06BrfpTMvbCkVOAt-9LYIxTSlD0VrtJ3eo-Y6h7Z_d_GmMAenQKCWt3dp/exec?code=" + code);
-      const result = await response.json();
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbyw9gDYSDj06BrfpTMvbCkVOAt-9LYIxTSlD0VrtJ3eo-Y6h7Z_d_GmMAenQKCWt3dp/exec?code=" + code);
+        const result = await response.json();
 
-      if (result.valid) {
-        /*window.location.href = "https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html";*/
-        // After you verify the code successfully...
-        localStorage.setItem('loggedIn', 'true');
-        window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/TeluguT.html';
+        if (result.valid) {
+          // ✅ Save login state and codeword
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('codeword', code); // <-- added this line
+
+          // Redirect to main page
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/TeluguT.html';
         } else {
-        alert("Invalid login code. Please try again.");
+          alert("Invalid login code. Please try again.");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        alert("Something went wrong. Please try again.");
       }
     }
   </script>
