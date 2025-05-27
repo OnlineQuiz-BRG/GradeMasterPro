@@ -51,11 +51,28 @@
       <h3>Daily Dictation</h3>
       <div class="stage-buttons">
 
-       
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage1T.html" class="card-button">Stage I</a>
+       <a href="#" id="stage1Btn" class="card-button">Stage I</a>
+
+<script>
+  document.getElementById('stage1Btn').addEventListener('click', () => {
+    // Check loggedIn and codeword before navigating
+    const loggedIn = localStorage.getItem('loggedIn');
+    const codeword = localStorage.getItem('codeword');
+    if (loggedIn !== 'true' || !codeword) {
+      alert('Please login first.');
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+      return;
+    }
+    // Navigate to Stage1T.html
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage1T.html';
+  });
+</script>
+
+        
         
       </div>
         <!-- 
+       <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage1T.html" class="card-button">Stage I</a>
         <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Stage4.html" class="card-button">Stage IV</a>
         <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Stage2.html" class="card-button">Stage II</a>
         <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Stage3.html" class="card-button">Stage III</a>
