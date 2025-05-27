@@ -17,7 +17,7 @@
       margin-bottom: 1rem;
     }
 
-    #startBtn {
+    #startBtn, #submitBtn {
       padding: 12px 24px;
       font-size: 1rem;
       margin: 1rem 0;
@@ -70,17 +70,6 @@
       border-left: 7px solid #0c8b3f;
       box-shadow: 0 0 10px rgba(0, 128, 0, 0.3);
     }
-
-    #resultFrame {
-      display: none;
-      margin-top: 2rem;
-      width: 100%;
-      max-width: 500px;
-      height: 500px;
-      border: none;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
   </style>
 </head>
 <body>
@@ -89,9 +78,7 @@
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
-
-  <!-- Result Recording Iframe -->
-  <iframe id="resultFrame"></iframe>
+  <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
 
   <script>
     const stageSheetMap = {
@@ -118,6 +105,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const stage = parseInt(urlParams.get("stage"), 10);
     const test = parseInt(urlParams.get("test"), 10);
+    const codeword = urlParams.get("codeword") || "unknown";
     const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
 
     const colLetter = (n) => {
@@ -156,6 +144,7 @@
         document.getElementById("audioPlayer").src = mp3;
 
         const startBtn = document.getElementById("startBtn");
+        const submitBtn = document.getElementById("submitBtn");
         const wordBox = document.getElementById("wordBox");
         const progressEl = document.getElementById("progress");
 
@@ -170,12 +159,7 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
-              wordBox.innerHTML = "";
-
-              // Show result iframe
-              const iframe = document.getElementById("resultFrame");
-              iframe.src = `recordResultT.html?stage=${stage}&test=${test}`;
-              iframe.style.display = "block";
+              submitBtn.style.display = "inline-block";
               return;
             }
 
@@ -190,6 +174,11 @@
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
           }, 1000);
+        });
+
+        submitBtn.addEventListener("click", () => {
+          const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
+          window.location.href = resultUrl;
         });
       })
       .catch(err => {
