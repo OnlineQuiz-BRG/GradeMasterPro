@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dictation Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff8f0;
+      color: #003300;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    #startBtn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      margin: 1rem 0;
+      cursor: pointer;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #audioPlayer {
+      width: 90%;
+      max-width: 400px;
+      margin: 1rem auto;
+      display: block;
+    }
+
+    audio::-internal-media-controls-download-button {
+      display: none;
+    }
+
+    audio::-webkit-media-controls-enclosure {
+      overflow: hidden;
+    }
+
+    #progress {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    #wordBox {
+      max-height: 60vh;
+      overflow-y: auto;
+      margin: 0 auto;
+      text-align: left;
+      padding: 1rem;
+      width: 90%;
+      max-width: 500px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background: #fff;
+    }
+.wordCard {
+  background-color: #f8fff8;
+  border-left: 5px solid #cccccc;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.highlight {
+  background-color: #e1ffe6;
+  border-left: 7px solid #0c8b3f; /* thick green border */
+  box-shadow: 0 0 10px rgba(0, 128, 0, 0.3);
+}
+  /* .wordCard {
+      background-color: #f0fff0;
+      border-left: 5px solid #007b5e;
+      padding: 10px;
+      margin-bottom: 8px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .highlight {
+      background-color: #d6f5d6;
+    }*/
+  </style>
+</head>
+<body>
+  <h1 id="stageInfo">Loading...</h1>
+  <button id="startBtn">Start Test</button>
+  <audio id="audioPlayer" controls controlsList="nodownload"></audio>
+  <div id="progress"></div>
+  <div id="wordBox"></div>
+
+  <script>
+    const stageSheetMap = {
+      1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
+      2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
+      3: "1GYLsF3Dv1dNgS6aj5X4U2bcQrBHe0Sx_8j8Y5X0wtOk",
+      4: "1tYvRRLQvle1cl1mdrwHvM0RQL0lCvdSij0y7NVE0Uug",
+      5: "1h7H4jvUZCQLubVE3XCnPehS_nN_8Vf5oPsI9Nearjxk",
+      6: "1lBa8s5xz7L0QUAUyhKSbZqnfiBDwD0unICDF1QAkVDI",
+      7: "1ZtACGJ85b5NQISrFbGp48oc-ksE6GkFx_qEClz3LGrs",
+      8: "1UnsfTc1pxqmkdYerJUW7CA_QEMdON8Jq-BeNijyA7Cg",
+      9: "1-peAZC9FsTKVK-x2owVfB-hYQV4mmi6uLcoS_gvjyDU",
+      10: "1DHrq99gPe7DZtPfApV2Dw2zZuVYNIC_5-Qkv52VkONI",
+      11: "19Z6PN_2eV-T8QnRRSgKr-prLzjFqTT7_lVVc_uy5Bys",
+      12: "12c7Sb5fFixJ1R3OjGJy4mHmfqFhfPVyYSWhdyiye9D4",
+      13: "1H6L7-CXNEKi1dkVzpXqMBwedSWDTwEtgUlVdhM4Quuk",
+      14: "1sQGv-D4m5zuyd8D2LYhuCkmTyHbw9QB0FIL5XJaaK6o",
+      15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
+      16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
+      17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
+      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const stage = parseInt(urlParams.get("stage"), 10);
+    const test = parseInt(urlParams.get("test"), 10);
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
+
+    const colLetter = (n) => {
+      let c = "";
+      while (n > 0) {
+        let r = (n - 1) % 26;
+        c = String.fromCharCode(65 + r) + c;
+        n = Math.floor((n - 1) / 26);
+      }
+      return c;
+    };
+
+    if (!stage || !test || !stageSheetMap[stage]) {
+      document.getElementById("stageInfo").textContent = "Invalid stage or test.";
+      throw new Error("Invalid input");
+    }
+
+    const sheetId = stageSheetMap[stage];
+    const col = colLetter(test + 1);
+    const range = `ODT!${col}1:${col}41`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const values = (data.values || []).map(r => r[0].trim());
+        const mp3 = values[0];
+        const words = values.slice(1).filter(Boolean);
+
+        if (!mp3.endsWith(".mp3")) {
+          alert("MP3 URL is missing or invalid");
+          return;
+        }
+
+        document.getElementById("stageInfo").textContent = `Stage ${stage} - Test ${test}`;
+        document.getElementById("audioPlayer").src = mp3;
+
+        const startBtn = document.getElementById("startBtn");
+        const wordBox = document.getElementById("wordBox");
+        const progressEl = document.getElementById("progress");
+
+        startBtn.disabled = false;
+
+        startBtn.addEventListener("click", () => {
+          startBtn.style.display = "none";
+          let current = 0;
+          let previousCard = null;
+
+          const interval = setInterval(() => {
+            if (current >= words.length) {
+              clearInterval(interval);
+              progressEl.textContent = "Test Completed!";
+              wordBox.innerHTML = ""; // Clear words after test completes
+              return;
+            }
+
+            const wordCard = document.createElement("div");
+            wordCard.className = "wordCard highlight";
+            wordCard.textContent = `${current + 1}. ${words[current]}`;
+
+            if (previousCard) previousCard.classList.remove("highlight");
+            wordBox.prepend(wordCard); // Add new word to top
+            previousCard = wordCard;
+
+            progressEl.textContent = `Word ${current + 1} of ${words.length}`;
+            current++;
+          }, 10000); // new word every 10 seconds
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Failed to fetch dictation data.");
+      });
+  </script>
+</body>
+</html>
