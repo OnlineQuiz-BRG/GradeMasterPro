@@ -82,7 +82,7 @@
   </div>
 
   <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbw_xpN0Tcnu4pEpDUDmYThBK1dFKg6ncWs_VtBhypgdQPAm_vwFoeZK5B08IPshhFoI/exec'; // <-- Use your deployed Apps Script URL
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzxcHVeU1FuWbE6F8rRlVBUImXbN_pTLXMP4Ujjjd6D2C_jJkH8nEvHcJvLEwYmhiNJ/exec'; // <-- Use your deployed Apps Script URL
 
   window.addEventListener("DOMContentLoaded", () => {
     const codeInput = document.getElementById("codeword");
@@ -155,7 +155,22 @@
         },
       });
 
-      const result = await response.json();
+      if (!response.ok) {
+        // HTTP error (404, 500, etc)
+        const text = await response.text();
+        alert("HTTP error: " + response.status + ": " + text);
+        return;
+      }
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonErr) {
+        const text = await response.text();
+        alert("Invalid JSON response: " + text);
+        return;
+      }
+
       if (result.success) {
         alert("Result recorded successfully!");
         document.getElementById("resultForm").reset();
@@ -164,13 +179,12 @@
       }
     } catch (error) {
       console.error(error);
-      alert("Error submitting result.");
+      alert("Error submitting result: " + error);
     }
   });
   </script>
 </body>
 </html>
-
 
 
 <!--<!DOCTYPE html>
