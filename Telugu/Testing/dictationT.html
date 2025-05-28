@@ -76,6 +76,7 @@
   <h1 id="stageInfo">Loading...</h1>
   <button id="startBtn">Start Test</button>
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
+  <audio id="bgMusic" src="calm-music.mp3" loop></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
   <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
@@ -146,6 +147,7 @@
         const audioPlayer = document.getElementById("audioPlayer");
         audioPlayer.src = mp3;
 
+        const bgMusic = document.getElementById("bgMusic");
         const startBtn = document.getElementById("startBtn");
         const submitBtn = document.getElementById("submitBtn");
         const wordBox = document.getElementById("wordBox");
@@ -155,6 +157,8 @@
 
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
+          bgMusic.play();
+
           let current = 0;
           let previousCard = null;
 
@@ -162,8 +166,9 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
-              wordBox.innerHTML = "";
+              wordBox.innerHTML = ""; // Clear wordBox after test
               audioPlayer.style.display = "none";
+              bgMusic.pause();
               submitBtn.style.display = "inline-block";
               return;
             }
