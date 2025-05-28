@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stage 1 - Dictation Tests</title>
   <style>
@@ -83,6 +84,12 @@
   <div id="errorMsg" class="error"></div>
 
   <script>
+    // Prevent back navigation to this page after logout
+    if (performance.navigation.type === 2) {
+      localStorage.clear();
+      location.href = "loginT.html";
+    }
+
     function getQueryParam(param) {
       const params = new URLSearchParams(window.location.search);
       return params.get(param);
