@@ -82,9 +82,15 @@
   </div>
 
   <script>
+  // Debug: Confirm script is loaded
+  alert("Script loaded!");
+
   const scriptURL = 'https://script.google.com/macros/s/AKfycbyonkuwHx-salbOPmbwpkucI130Lx_wbw73tz2C20oGDYMNR2ehzLcxUJIu5_7rUD_r/exec'; // <-- Use your deployed Apps Script URL
 
   window.addEventListener("DOMContentLoaded", () => {
+    // Debug: Confirm DOM is ready
+    alert("DOMContentLoaded!");
+
     const codeInput = document.getElementById("codeword");
     const stageInput = document.getElementById("stageNumber");
     const testInput = document.getElementById("testNumber");
@@ -120,6 +126,8 @@
   });
 
   document.getElementById("resultForm").addEventListener("submit", async (e) => {
+    // Debug: Confirm form submit handler is triggered
+    alert("Form submit handler triggered");
     e.preventDefault();
 
     const codeword = document.getElementById("codeword").value;
@@ -146,6 +154,9 @@
       totalScore
     };
 
+    // Debug: Show payload before sending
+    alert("Submitting payload: " + JSON.stringify(payload));
+
     try {
       const response = await fetch(scriptURL, {
         method: "POST",
@@ -155,8 +166,10 @@
         },
       });
 
+      // Debug: Show response status
+      alert("Fetch completed with status: " + response.status);
+
       if (!response.ok) {
-        // HTTP error (404, 500, etc)
         const text = await response.text();
         alert("HTTP error: " + response.status + ": " + text);
         return;
@@ -178,7 +191,6 @@
         alert("Failed to record result. " + (result.error || "Please try again."));
       }
     } catch (error) {
-      console.error(error);
       alert("Error submitting result: " + error);
     }
   });
