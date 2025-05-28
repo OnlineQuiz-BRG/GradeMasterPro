@@ -82,90 +82,93 @@
   </div>
 
   <script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzxcHVeU1FuWbE6F8rRlVBUImXbN_pTLXMP4Ujjjd6D2C_jJkH8nEvHcJvLEwYmhiNJ/exec'; // <-- Replace with your deployed Apps Script URL
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzxcHVeU1FuWbE6F8rRlVBUImXbN_pTLXMP4Ujjjd6D2C_jJkH8nEvHcJvLEwYmhiNJ/exec'; // <-- Replace with your deployed Apps Script URL
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const codeInput = document.getElementById("codeword");
-      const stageInput = document.getElementById("stageNumber");
-      const testInput = document.getElementById("testNumber");
-      const nameDisplay = document.getElementById("studentName");
+  window.addEventListener("DOMContentLoaded", () => {
+    const codeInput = document.getElementById("codeword");
+    const stageInput = document.getElementById("stageNumber");
+    const testInput = document.getElementById("testNumber");
+    const nameDisplay = document.getElementById("studentName");
 
-      const savedCode = localStorage.getItem("codeword");
-      const savedName = localStorage.getItem("studentName");
-      const savedStage = localStorage.getItem("stageNumber");
-      const savedTest = localStorage.getItem("testNumber");
+    const savedCode = localStorage.getItem("codeword");
+    const savedName = localStorage.getItem("studentName");
+    const savedStage = localStorage.getItem("stageNumber");
+    const savedTest = localStorage.getItem("testNumber");
 
-      if (!savedCode || !savedName || !savedStage || !savedTest) {
-        alert("You are not logged in properly. Please log in first.");
-        window.location.href = "loginT.html";
-        return;
+    if (!savedCode || !savedName || !savedStage || !savedTest) {
+      alert("You are not logged in properly. Please log in first.");
+      window.location.href = "loginT.html";
+      return;
+    }
+
+    codeInput.value = savedCode;
+    stageInput.value = savedStage;
+    testInput.value = savedTest;
+    nameDisplay.textContent = "Welcome, " + savedName + "!";
+
+    const wordScoresContainer = document.getElementById("wordScores");
+    for (let i = 1; i <= 40; i++) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.name = "word" + i;
+      input.placeholder = "Word " + i;
+      input.min = 0;
+      input.max = 1;
+      input.required = true;
+      wordScoresContainer.appendChild(input);
+    }
+  });
+
+  document.getElementById("resultForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const codeword = document.getElementById("codeword").value;
+    const stageNumber = document.getElementById("stageNumber").value;
+    const testNumber = document.getElementById("testNumber").value;
+    const studentName = localStorage.getItem("studentName");
+    const date = new Date().toLocaleDateString("en-GB");
+
+    const wordScores = [];
+    for (let i = 1; i <= 40; i++) {
+      const value = document.querySelector(`[name="word${i}"]`).value.trim();
+      wordScores.push(value === "" ? null : parseInt(value));
+    }
+
+    const totalScore = wordScores.filter(score => score === 1).length;
+
+    const payload = {
+      codeword,
+      stageNumber,
+      testNumber,
+      studentName, // <-- Included here
+      date,
+      wordScores,
+      totalScore
+    };
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert("Result recorded successfully!");
+        document.getElementById("resultForm").reset();
+      } else {
+        alert("Failed to record result. Please try again.");
       }
+    } catch (error) {
+      console.error(error);
+      alert("Error submitting result.");
+    }
+  });
+</script>
 
-      codeInput.value = savedCode;
-      stageInput.value = savedStage;
-      testInput.value = savedTest;
-      nameDisplay.textContent = "Welcome, " + savedName + "!";
-
-      const wordScoresContainer = document.getElementById("wordScores");
-      for (let i = 1; i <= 40; i++) {
-        const input = document.createElement("input");
-        input.type = "number";
-        input.name = "word" + i;
-        input.placeholder = "Word " + i;
-        input.min = 0;
-        input.max = 1;
-        input.required = true;
-        wordScoresContainer.appendChild(input);
-      }
-    });
-
-    document.getElementById("resultForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const codeword = document.getElementById("codeword").value;
-      const stageNumber = document.getElementById("stageNumber").value;
-      const testNumber = document.getElementById("testNumber").value;
-      const date = new Date().toLocaleDateString("en-GB");
-
-      const wordScores = [];
-      for (let i = 1; i <= 40; i++) {
-        const value = document.querySelector(`[name="word${i}"]`).value.trim();
-        wordScores.push(value === "" ? null : parseInt(value));
-      }
-
-      const totalScore = wordScores.filter(score => score === 1).length;
-
-      const payload = {
-        codeword,
-        stageNumber,
-        testNumber,
-        date,
-        wordScores,
-        totalScore
-      };
-
-      try {
-        const response = await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify(payload),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        const result = await response.json();
-        if (result.success) {
-          alert("Result recorded successfully!");
-          document.getElementById("resultForm").reset();
-        } else {
-          alert("Failed to record result. Please try again.");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Error submitting result.");
-      }
-    });
-  </script>
 </body>
 </html>
 
