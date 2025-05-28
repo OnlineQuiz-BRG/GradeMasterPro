@@ -82,7 +82,7 @@
   </div>
 
   <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbzxcHVeU1FuWbE6F8rRlVBUImXbN_pTLXMP4Ujjjd6D2C_jJkH8nEvHcJvLEwYmhiNJ/exec'; // <-- Replace with your deployed Apps Script URL
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbw_xpN0Tcnu4pEpDUDmYThBK1dFKg6ncWs_VtBhypgdQPAm_vwFoeZK5B08IPshhFoI/exec'; // <-- Use your deployed Apps Script URL
 
   window.addEventListener("DOMContentLoaded", () => {
     const codeInput = document.getElementById("codeword");
@@ -140,7 +140,7 @@
       codeword,
       stageNumber,
       testNumber,
-      studentName, // <-- Included here
+      studentName,
       date,
       wordScores,
       totalScore
@@ -160,18 +160,16 @@
         alert("Result recorded successfully!");
         document.getElementById("resultForm").reset();
       } else {
-        alert("Failed to record result. Please try again.");
+        alert("Failed to record result. " + (result.error || "Please try again."));
       }
     } catch (error) {
       console.error(error);
       alert("Error submitting result.");
     }
   });
-</script>
-
+  </script>
 </body>
 </html>
-
 
 
 
