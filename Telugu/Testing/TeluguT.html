@@ -70,11 +70,10 @@
           window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
           return;
         }
+        localStorage.setItem("stageNumber", i);
         window.location.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage${i}T.html`;
       });
-      /*localStorage.setItem("stageNumber", selectedStage);  // e.g., "3"*/
       container.appendChild(btn);
-      localStorage.setItem("stageNumber", selectedStage);  // e.g., "3"
     }
   </script>
 
