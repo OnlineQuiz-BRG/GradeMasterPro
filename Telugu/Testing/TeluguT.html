@@ -17,7 +17,7 @@
   if (localStorage.getItem('loggedIn') !== 'true') {
     window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html';
   }
-
+ 
   // Logout action
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('loggedIn');
@@ -53,6 +53,8 @@
     const container = document.getElementById('stageContainer');
     const totalStages = 18;
 
+     localStorage.setItem("stageNumber", selectedStage);  // e.g., "3"
+    
     for (let i = 1; i <= totalStages; i++) {
       const stageNum = i.toString().padStart(2, '0'); // Stage01, Stage02, ...
       const btn = document.createElement('a');
