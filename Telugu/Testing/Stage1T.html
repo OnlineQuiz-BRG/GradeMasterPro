@@ -129,8 +129,8 @@
         btn.textContent = `Test ${i}`;
         btn.addEventListener("click", () => {
           const url = `dictationT.html?stage=1&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
+          localStorage.setItem("testNumber", i); // ✅ FIX: Store correct test number
           window.location.href = url;
-          localStorage.setItem("testNumber", selectedTest);    // e.g., "25"
         });
         container.appendChild(btn);
       }
