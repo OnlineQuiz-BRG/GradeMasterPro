@@ -52,8 +52,6 @@
   <script>
     const container = document.getElementById('stageContainer');
     const totalStages = 18;
-
-     localStorage.setItem("stageNumber", selectedStage);  // e.g., "3"
     
     for (let i = 1; i <= totalStages; i++) {
       const stageNum = i.toString().padStart(2, '0'); // Stage01, Stage02, ...
@@ -66,6 +64,7 @@
         e.preventDefault();
         const loggedIn = localStorage.getItem('loggedIn');
         const codeword = localStorage.getItem('codeword');
+        
         if (loggedIn !== 'true' || !codeword) {
           alert('Please login first.');
           window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
@@ -73,7 +72,7 @@
         }
         window.location.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage${i}T.html`;
       });
-
+      /*localStorage.setItem("stageNumber", selectedStage);  // e.g., "3"*/
       container.appendChild(btn);
     }
   </script>
