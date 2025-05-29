@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Submit Dictation Test Score</title>
+  <meta charset="UTF-8" />
+  <title>Dictation Test Entry Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -13,7 +14,7 @@
       color: #333;
     }
 
-    h1, h2 {
+    h1 {
       text-align: center;
       color: #003366;
     }
@@ -35,46 +36,49 @@
     .section-title {
       font-size: 18px;
       font-weight: bold;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       color: #004080;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
     }
 
     label {
       display: flex;
       flex-direction: column;
-      margin-bottom: 10px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 140px;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"],
+    input[type="number"] {
       padding: 6px;
       border-radius: 4px;
       border: 1px solid #ccc;
+      font-size: 14px;
     }
 
-    .short { width: 100px; }
-    .medium { width: 200px; }
-    .tiny { width: 60px; }
-
-    .row {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+    .short { max-width: 120px; }
+    .medium { max-width: 200px; }
+    .tiny { max-width: 80px; }
 
     .word-grid {
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 8px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+      gap: 6px;
     }
 
     .word-grid input {
-      width: 40px;
-      padding: 4px;
+      padding: 5px;
       text-align: center;
       border: 1px solid #99c2ff;
       border-radius: 4px;
       background-color: #eaf2ff;
+      font-size: 14px;
     }
 
     button {
@@ -98,32 +102,59 @@
       text-align: center;
       font-weight: bold;
       color: green;
+      margin-top: 10px;
     }
 
     input[readonly] {
       background-color: #f3f3f3;
       font-weight: bold;
     }
+
+    @media screen and (max-width: 600px) {
+      .row {
+        flex-direction: column;
+      }
+
+      .short, .medium, .tiny {
+        max-width: 100%;
+        width: 100%;
+      }
+
+      .word-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    @media screen and (min-width: 601px) and (max-width: 1024px) {
+      .word-grid {
+        grid-template-columns: repeat(8, 1fr);
+      }
+    }
+
+    @media screen and (min-width: 1025px) {
+      .word-grid {
+        grid-template-columns: repeat(10, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Submit Dictation Test Score</h1>
+  <h1>Dictation Test Entry Form</h1>
   <form id="wordForm">
-    
     <div class="section">
       <div class="section-title">Student Details</div>
       <div class="row">
         <label>Codeword:
-          <input type="text" name="codeword" class="short" maxlength="10" required>
+          <input type="text" name="codeword" class="short" maxlength="10" required />
         </label>
         <label>Student Name:
-          <input type="text" name="studentName" class="medium" maxlength="20" required>
+          <input type="text" name="studentName" class="medium" maxlength="20" required />
         </label>
         <label>Stage Number:
-          <input type="number" name="stageNumber" class="tiny" max="99" required>
+          <input type="number" name="stageNumber" class="tiny" max="99" required />
         </label>
         <label>Test Number:
-          <input type="number" name="testNumber" class="tiny" max="99" required>
+          <input type="number" name="testNumber" class="tiny" max="99" required />
         </label>
       </div>
     </div>
@@ -136,7 +167,7 @@
     <div class="section">
       <div class="section-title">Total Score</div>
       <label>Total Score:
-        <input type="number" name="totalScore" id="totalScore" class="tiny" readonly>
+        <input type="number" name="totalScore" id="totalScore" class="tiny" readonly />
       </label>
       <button type="submit">Submit</button>
       <p id="status"></p>
@@ -148,7 +179,6 @@
     const wordsDiv = document.getElementById('words');
     const totalInput = document.getElementById('totalScore');
 
-    // Create 40 word input boxes
     for (let i = 1; i <= 40; i++) {
       const input = document.createElement('input');
       input.type = 'number';
@@ -180,14 +210,14 @@
 
       const response = await fetch("https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec", {
         method: "POST",
-        body: JSON.stringify(jsonData)
+        body: JSON.stringify(jsonData),
       });
 
-      const status = document.getElementById('status');
+      const status = document.getElementById("status");
       if (response.ok) {
         status.textContent = "✅ Submission successful!";
         form.reset();
-        updateTotal(); // Reset total
+        updateTotal();
       } else {
         status.textContent = "❌ Submission failed.";
       }
