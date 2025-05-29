@@ -1,0 +1,923 @@
+loginT.html code
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nachiketa Vidyamandir Login</title>
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Baloo 2', cursive;
+      height: 100%;
+    }
+
+    body {
+      background: url('https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/bcgimage.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+      z-index: 0;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.4);
+      z-index: -1;
+    }
+
+    .login-box {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      border: 4px dashed #ff9933;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    img.logo {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid #ff9933;
+      box-shadow: 0 0 12px rgba(255, 153, 51, 0.6);
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    h1 {
+      color: #ff9933;
+      margin: 10px 0 5px;
+      font-size: 26px;
+    }
+
+    h3 {
+      color: #4a2c2a;
+      margin-bottom: 25px;
+      font-size: 16px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    .login-button {
+      background-color: #ff9933;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+
+    .login-button:hover {
+      background-color: #ff7518;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <img src="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/NachiketaLogo.png" alt="Nachiketa Logo" class="logo">
+    <h1>Nachiketa Vidyamandir, Kodgal</h1>
+    <h3>Welcome to Telugu - Daily Dictation Writing Practice</h3>
+
+    <input type="text" id="loginCode" placeholder="Enter Code (e.g., NVMK123409)">
+    <br>
+    <button class="login-button" onclick="handleLogin()">Login</button>
+  </div>
+
+  <script>
+    // Clear localStorage to reset any prior session
+    localStorage.clear();
+
+    // Optional: If user comes from back navigation, clear again and stay on login
+    if (performance.navigation.type === 2) {
+      localStorage.clear();
+    }
+
+    async function handleLogin() {
+      const code = document.getElementById("loginCode").value.trim().toUpperCase();
+      if (!/^NVMK\d{6}$/.test(code)) {
+        alert("Invalid code format! Use NVMKXXXXYY");
+        return;
+      }
+
+      try {
+        const response = await fetch("https://script.google.com/macros/s/AKfycbxReyA3L-bmzhMz2TbrWm4NlmWHDPbamIjjfeu5Y0CZVF7jSt0AsD8Y9A-gWpA-yIay/exec?code=" + code);
+        const result = await response.json();
+
+        if (result.valid) {
+          localStorage.setItem('loggedIn', 'true');
+          localStorage.setItem('codeword', code);
+          localStorage.setItem('studentName', result.name || "Student");
+          window.location.href = '/GradeMasterPro/Telugu/Testing/TeluguT.html';
+        } else {
+          alert("Invalid login code. Please try again.");
+        }
+      } catch (error) {
+        alert("Login failed. Please check your connection and try again.");
+        console.error("Login error:", error);
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+TeluguT.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telugu Dictation Practice</title>
+  <link rel="stylesheet" href="tStyle.css" />
+</head>
+<body>
+
+<button id="logoutBtn" style="position:absolute; top:1rem; right:1rem; padding:0.5rem 1rem;">
+  Logout
+</button>
+
+<script>
+  // Redirect if not logged in
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html';
+  }
+ 
+  // Logout action
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('loggedIn');
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+  });
+</script>
+
+<div class="container">
+
+  <!-- Title Card -->
+  <div class="title-card">
+    <h1 class="main-title">Welcome to Telugu Dictation Practice</h1>
+    <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
+  </div>
+
+  <h2 id="welcomeMessage"></h2>
+  <script>
+    const name = localStorage.getItem("studentName");
+    if (name) {
+      document.getElementById("welcomeMessage").textContent = "Welcome, " + name + "!";
+    }
+  </script>
+
+  <!-- Daily Dictation Card -->
+  <div class="card stage-card">
+    <h3>Daily Dictation</h3>
+    <div class="stage-buttons" id="stageContainer">
+      <!-- Buttons will be injected by script -->
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('stageContainer');
+    const totalStages = 18;
+    
+    for (let i = 1; i <= totalStages; i++) {
+      const stageNum = i.toString().padStart(2, '0'); // Stage01, Stage02, ...
+      const btn = document.createElement('a');
+      btn.className = 'card-button';
+      btn.href = '#';
+      btn.textContent = `Stage ${i}`;
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const loggedIn = localStorage.getItem('loggedIn');
+        const codeword = localStorage.getItem('codeword');
+        
+        if (loggedIn !== 'true' || !codeword) {
+          alert('Please login first.');
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+          return;
+        }
+        localStorage.setItem("stageNumber", i);
+        window.location.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage${i}T.html`;
+      });
+      container.appendChild(btn);
+    }
+  </script>
+
+</div>
+</body>
+</html>
+
+Stage1T.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stage 1 - Dictation Tests</title>
+  <style>
+    body {
+      font-family: 'Baloo 2', cursive;
+      background-color: #fff8f0;
+      color: #003300;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    #studentNameDisplay {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #006600;
+    }
+
+    #buttonContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .testBtn {
+      padding: 1rem 1.5rem;
+      font-size: 1.1rem;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+ 
+    .testBtn:hover {
+      background-color: #005f47;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 2rem;
+    }
+
+    #logoutBtn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+      background-color: #cc0000;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #logoutBtn:hover {
+      background-color: #990000;
+    }
+  </style>
+</head>
+<body>
+  <button id="logoutBtn">Logout</button>
+
+  <h1>Stage 1 - Dictation Tests</h1>
+  <div id="studentNameDisplay"></div>
+  <p>Select a test to begin:</p>
+  <div id="buttonContainer"></div>
+  <div id="errorMsg" class="error"></div>
+
+  <script>
+    // Prevent back navigation to this page after logout
+    if (performance.navigation.type === 2) {
+      localStorage.clear();
+      location.href = "loginT.html";
+    }
+
+    function getQueryParam(param) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(param);
+    }
+
+    // Get values from URL or fallback to localStorage
+    let codeword = getQueryParam("codeword") || localStorage.getItem("codeword");
+    let studentName = getQueryParam("studentName") || localStorage.getItem("studentName");
+
+    const errorMsg = document.getElementById("errorMsg");
+    const container = document.getElementById("buttonContainer");
+    const nameDisplay = document.getElementById("studentNameDisplay");
+
+    // Logout logic
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("codeword");
+      localStorage.removeItem("studentName");
+      window.location.href = "loginT.html";
+    });
+
+    if (!codeword || !studentName) {
+      errorMsg.textContent = "Codeword or student name missing. Please return to the login page.";
+      setTimeout(() => {
+        window.location.href = "loginT.html";
+      }, 3000);
+    } else {
+      localStorage.setItem("codeword", codeword);
+      localStorage.setItem("studentName", studentName);
+  /*    localStorage.setItem("testNumber", selectedTest);    // e.g., "25"*/
+
+      nameDisplay.textContent = `Welcome, ${studentName}!`;
+
+      const totalTests = 50;
+      for (let i = 1; i <= totalTests; i++) {
+        const btn = document.createElement("button");
+        btn.className = "testBtn";
+        btn.textContent = `Test ${i}`;
+        btn.addEventListener("click", () => {
+          const url = `dictationT.html?stage=1&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
+          localStorage.setItem("testNumber", i); // ✅ FIX: Store correct test number
+          window.location.href = url;
+        });
+        container.appendChild(btn);
+      }
+    }
+  </script>
+</body>
+</html>
+
+dictationT.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dictation Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff8f0;
+      color: #003300;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    #startBtn, #submitBtn {
+      padding: 12px 24px;
+      font-size: 1rem;
+      margin: 1rem 0;
+      cursor: pointer;
+      background-color: #007b5e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #audioPlayer {
+      width: 90%;
+      max-width: 400px;
+      margin: 1rem auto;
+      display: block;
+    }
+
+    #progress {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    #wordBox {
+      max-height: 60vh;
+      overflow-y: auto;
+      margin: 0 auto;
+      text-align: left;
+      padding: 1rem;
+      width: 90%;
+      max-width: 500px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .wordCard {
+      background-color: #f8fff8;
+      border-left: 5px solid #cccccc;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .highlight {
+      background-color: #ffe8cc;
+      border-left: 7px solid #ff9900;
+      box-shadow: 0 0 10px rgba(255, 153, 0, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <h1 id="stageInfo">Loading...</h1>
+  <button id="startBtn">Start Test</button>
+  <audio id="audioPlayer" controls controlsList="nodownload"></audio>
+  <audio id="bgMusic" src="calm-music.mp3" loop></audio>
+  <div id="progress"></div>
+  <div id="wordBox"></div>
+  <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
+
+  <script>
+    const stageSheetMap = {
+      1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
+      2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
+      3: "1GYLsF3Dv1dNgS6aj5X4U2bcQrBHe0Sx_8j8Y5X0wtOk",
+      4: "1tYvRRLQvle1cl1mdrwHvM0RQL0lCvdSij0y7NVE0Uug",
+      5: "1h7H4jvUZCQLubVE3XCnPehS_nN_8Vf5oPsI9Nearjxk",
+      6: "1lBa8s5xz7L0QUAUyhKSbZqnfiBDwD0unICDF1QAkVDI",
+      7: "1ZtACGJ85b5NQISrFbGp48oc-ksE6GkFx_qEClz3LGrs",
+      8: "1UnsfTc1pxqmkdYerJUW7CA_QEMdON8Jq-BeNijyA7Cg",
+      9: "1-peAZC9FsTKVK-x2owVfB-hYQV4mmi6uLcoS_gvjyDU",
+      10: "1DHrq99gPe7DZtPfApV2Dw2zZuVYNIC_5-Qkv52VkONI",
+      11: "19Z6PN_2eV-T8QnRRSgKr-prLzjFqTT7_lVVc_uy5Bys",
+      12: "12c7Sb5fFixJ1R3OjGJy4mHmfqFhfPVyYSWhdyiye9D4",
+      13: "1H6L7-CXNEKi1dkVzpXqMBwedSWDTwEtgUlVdhM4Quuk",
+      14: "1sQGv-D4m5zuyd8D2LYhuCkmTyHbw9QB0FIL5XJaaK6o",
+      15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
+      16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
+      17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
+      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const stage = parseInt(urlParams.get("stage"), 10);
+    const test = parseInt(urlParams.get("test"), 10);
+    const codeword = urlParams.get("codeword") || "unknown";
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
+
+    const colLetter = (n) => {
+      let c = "";
+      while (n > 0) {
+        let r = (n - 1) % 26;
+        c = String.fromCharCode(65 + r) + c;
+        n = Math.floor((n - 1) / 26);
+      }
+      return c;
+    };
+
+    const stageInfoEl = document.getElementById("stageInfo");
+
+    if (!stage || !test || !stageSheetMap[stage]) {
+      stageInfoEl.textContent = "Invalid stage or test.";
+      throw new Error("Invalid input");
+    }
+
+    const sheetId = stageSheetMap[stage];
+    const col = colLetter(test + 1);
+    const range = `ODT!${col}1:${col}41`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const values = (data.values || []).map(r => r[0]?.trim() || "");
+        const mp3 = values[0];
+        const words = values.slice(1).filter(Boolean);
+
+        if (!mp3.endsWith(".mp3")) {
+          alert("MP3 URL is missing or invalid.");
+          return;
+        }
+
+        stageInfoEl.textContent = `Stage ${stage} - Test ${test}`;
+        const audioPlayer = document.getElementById("audioPlayer");
+        audioPlayer.src = mp3;
+
+        const bgMusic = document.getElementById("bgMusic");
+        const startBtn = document.getElementById("startBtn");
+        const submitBtn = document.getElementById("submitBtn");
+        const wordBox = document.getElementById("wordBox");
+        const progressEl = document.getElementById("progress");
+
+        startBtn.disabled = false;
+
+        startBtn.addEventListener("click", () => {
+          startBtn.style.display = "none";
+          bgMusic.play();
+
+          let current = 0;
+          let previousCard = null;
+
+          const interval = setInterval(() => {
+            if (current >= words.length) {
+              clearInterval(interval);
+              progressEl.textContent = "Test Completed!";
+              wordBox.innerHTML = ""; // Clear wordBox after test
+              audioPlayer.style.display = "none";
+              bgMusic.pause();
+              submitBtn.style.display = "inline-block";
+              return;
+            }
+
+            const wordCard = document.createElement("div");
+            wordCard.className = "wordCard highlight";
+            wordCard.textContent = `${current + 1}. ${words[current]}`;
+
+            if (previousCard) previousCard.classList.remove("highlight");
+            wordBox.prepend(wordCard);
+            previousCard = wordCard;
+
+            progressEl.textContent = `Word ${current + 1} of ${words.length}`;
+            current++;
+          }, 1000);
+        });
+
+        submitBtn.addEventListener("click", () => {
+          const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
+          window.location.href = resultUrl;
+        });
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Failed to fetch dictation data.");
+      });
+  </script>
+</body>
+</html>
+
+recordResultT.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Record Result</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Baloo 2', cursive;
+      margin: 20px;
+      background-color: #f5f5ff;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #333399;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background-color: #333399;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #studentName {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #006600;
+      font-weight: bold;
+      text-align: center;
+    }
+    .word-score {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Record Dictation Result</h2>
+    <div id="studentName">Welcome, Student!</div>
+    <form id="resultForm">
+      <label for="codeword">Codeword</label>
+      <input type="text" id="codeword" name="codeword" readonly>
+
+      <label for="stageNumber">Stage Number</label>
+      <input type="text" id="stageNumber" name="stageNumber" readonly>
+
+      <label for="testNumber">Test Number</label>
+      <input type="text" id="testNumber" name="testNumber" readonly>
+
+      <label>Enter Marks for 40 Words</label>
+      <div class="word-score" id="wordScores"></div>
+
+      <button type="submit">Submit Result</button>
+    </form>
+  </div>
+
+  <script>
+  // Debug: Confirm script is loaded
+  alert("Script loaded!");
+
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbyonkuwHx-salbOPmbwpkucI130Lx_wbw73tz2C20oGDYMNR2ehzLcxUJIu5_7rUD_r/exec'; // <-- Use your deployed Apps Script URL
+
+  window.addEventListener("DOMContentLoaded", () => {
+    // Debug: Confirm DOM is ready
+    alert("DOMContentLoaded!");
+
+    const codeInput = document.getElementById("codeword");
+    const stageInput = document.getElementById("stageNumber");
+    const testInput = document.getElementById("testNumber");
+    const nameDisplay = document.getElementById("studentName");
+
+    const savedCode = localStorage.getItem("codeword");
+    const savedName = localStorage.getItem("studentName");
+    const savedStage = localStorage.getItem("stageNumber");
+    const savedTest = localStorage.getItem("testNumber");
+
+    if (!savedCode || !savedName || !savedStage || !savedTest) {
+      alert("You are not logged in properly. Please log in first.");
+      window.location.href = "loginT.html";
+      return;
+    }
+
+    codeInput.value = savedCode;
+    stageInput.value = savedStage;
+    testInput.value = savedTest;
+    nameDisplay.textContent = "Welcome, " + savedName + "!";
+
+    const wordScoresContainer = document.getElementById("wordScores");
+    for (let i = 1; i <= 40; i++) {
+      const input = document.createElement("input");
+      input.type = "number";
+      input.name = "word" + i;
+      input.placeholder = "Word " + i;
+      input.min = 0;
+      input.max = 1;
+      input.required = true;
+      wordScoresContainer.appendChild(input);
+    }
+  });
+
+  document.getElementById("resultForm").addEventListener("submit", async (e) => {
+    // Debug: Confirm form submit handler is triggered
+    alert("Form submit handler triggered");
+    e.preventDefault();
+
+    const codeword = document.getElementById("codeword").value;
+    const stageNumber = document.getElementById("stageNumber").value;
+    const testNumber = document.getElementById("testNumber").value;
+    const studentName = localStorage.getItem("studentName");
+    const date = new Date().toLocaleDateString("en-GB");
+
+    const wordScores = [];
+    for (let i = 1; i <= 40; i++) {
+      const value = document.querySelector(`[name="word${i}"]`).value.trim();
+      wordScores.push(value === "" ? null : parseInt(value));
+    }
+
+    const totalScore = wordScores.filter(score => score === 1).length;
+
+    const payload = {
+      codeword,
+      stageNumber,
+      testNumber,
+      studentName,
+      date,
+      wordScores,
+      totalScore
+    };
+
+    // Debug: Show payload before sending
+    alert("Submitting payload: " + JSON.stringify(payload));
+
+    try {
+      const response = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Debug: Show response status
+      alert("Fetch completed with status: " + response.status);
+
+      if (!response.ok) {
+        const text = await response.text();
+        alert("HTTP error: " + response.status + ": " + text);
+        return;
+      }
+
+      let result;
+      try {
+        result = await response.json();
+      } catch (jsonErr) {
+        const text = await response.text();
+        alert("Invalid JSON response: " + text);
+        return;
+      }
+
+      if (result.success) {
+        alert("Result recorded successfully!");
+        document.getElementById("resultForm").reset();
+      } else {
+        alert("Failed to record result. " + (result.error || "Please try again."));
+      }
+    } catch (error) {
+      alert("Error submitting result: " + error);
+    }
+  });
+  </script>
+</body>
+</html>
+
+
+tStyle.css
+body {
+  font-family: 'Nunito', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(rgba(255, 230, 179, 0.3), rgba(255, 255, 255, 0.3)),
+              url('NaturesClass.png') no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Title Card */
+.title-card {
+  background-color: #ffffffcc; /* translucent white */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px 30px;
+  display: inline-block;
+  backdrop-filter: blur(4px);
+  margin-bottom: 30px;
+  /* Removed min-height and flexbox to allow natural height */
+}
+
+/* Programme Details Card */
+.card {
+  background-color: #ffffffcc;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px 30px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  display: inline-block;
+  margin-bottom: 20px;
+  /* Removed min-height and flexbox to allow natural height */
+}
+
+.main-title {
+  color: green;
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+/* Expanded card for stage buttons */
+.stage-card {
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Shrink the heading */
+.stage-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Stage Buttons Layout with 3 columns and 6 rows */
+.stage-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  grid-template-rows: repeat(6, auto);  /* 6 rows, auto height */
+  gap: 0.5rem;
+  justify-items: center; /* center buttons horizontally */
+}
+
+/* Buttons inside stage-buttons */
+.stage-buttons .card-button {
+  width: 100%;
+  max-width: 150px; /* control max button width */
+  font-size: 0.9rem;
+  padding: 0.5rem 0.7rem;
+  margin: 0;
+  background-color: #4e54c8;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.stage-buttons .card-button:hover {
+  background-color: #3b40a0;
+}
+
+/* Buttons */
+.card-button {
+  display: inline-block;
+  padding: 12px 16px;
+  margin: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  background-color: #007bff;
+  text-decoration: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.card-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+/* Responsive: On smaller screens, stack columns */
+@media (max-width: 768px) {
+  .stage-buttons {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .stage-buttons {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+}
