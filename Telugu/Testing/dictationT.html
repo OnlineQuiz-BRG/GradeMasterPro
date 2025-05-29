@@ -187,8 +187,7 @@
         });
 
         submitBtn.addEventListener("click", () => {
-          const resultUrl = `SaveResult.html
-         
+          const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
           window.location.href = resultUrl;
         });
       })
@@ -202,7 +201,7 @@
 
 
 <!--
-?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
