@@ -87,6 +87,7 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 16px;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -94,9 +95,20 @@
     }
 
     #status {
-      margin-top: 15px;
+      margin-top: 20px;
       text-align: center;
       font-weight: bold;
+      font-size: 18px;
+      color: green;
+    }
+
+    #confirmation {
+      display: none;
+      text-align: center;
+      padding: 20px;
+      background: #e0ffe0;
+      border: 1px solid #b2d8b2;
+      border-radius: 10px;
     }
 
     @media (max-width: 600px) {
@@ -110,6 +122,14 @@
 <body>
   <div class="container">
     <h2>Student Test Entry Form</h2>
+
+    <!-- Confirmation message -->
+    <div id="confirmation">
+      <p>✅ Successfully submitted!</p>
+      <button id="newEntry">Submit another Test result</button>
+    </div>
+
+    <!-- Form -->
     <form id="wordForm">
       <!-- Section 1: Basic Info -->
       <div class="section">
@@ -153,6 +173,8 @@
     const form = document.getElementById('wordForm');
     const wordsDiv = document.getElementById('words');
     const totalInput = document.getElementById('totalScore');
+    const confirmation = document.getElementById('confirmation');
+    const newEntryBtn = document.getElementById('newEntry');
 
     // Generate 40 word input boxes with labels W1–W40
     for (let i = 1; i <= 40; i++) {
@@ -195,20 +217,25 @@
         jsonData[key] = value;
       });
 
-      // 🔁 Replace with your deployed Google Apps Script Web App URL
+      // ✅ Replace with your deployed Google Apps Script Web App URL
       const response = await fetch("https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec", {
         method: "POST",
         body: JSON.stringify(jsonData),
       });
 
-      const status = document.getElementById("status");
       if (response.ok) {
-        status.textContent = "✅ Submission successful!";
+        form.style.display = "none";
+        confirmation.style.display = "block";
         form.reset();
         updateTotal();
       } else {
-        status.textContent = "❌ Submission failed.";
+        alert("❌ Submission failed. Please try again.");
       }
+    });
+
+    newEntryBtn.addEventListener('click', () => {
+      confirmation.style.display = "none";
+      form.style.display = "block";
     });
   </script>
 </body>
