@@ -2,26 +2,81 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Word Submission Form</title>
+  <title>Dictation Test Entry Form</title>
   <style>
-    body { font-family: Arial; padding: 20px; max-width: 800px; margin: auto; }
-    input[type="text"], input[type="number"] { width: 100%; padding: 8px; margin-bottom: 10px; }
-    button { padding: 10px 20px; font-size: 16px; }
-    h2 { margin-top: 40px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .short { width: 100px; }
+    .medium { width: 200px; }
+    .tiny { width: 50px; }
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .word-grid input {
+      width: 40px;
+      text-align: center;
+    }
+    button {
+      width: fit-content;
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      align-self: center;
+    }
+    #status {
+      text-align: center;
+      font-weight: bold;
+      color: green;
+    }
   </style>
 </head>
 <body>
   <h1>Dictation Test Entry Form</h1>
   <form id="wordForm">
-    <label>Codeword: <input type="text" name="codeword" required></label><br>
-    <label>Student Name: <input type="text" name="studentName" required></label><br>
-    <label>Stage Number: <input type="number" name="stageNumber" required></label><br>
-    <label>Test Number: <input type="number" name="testNumber" required></label><br>
+    <label>Codeword:
+      <input type="text" name="codeword" class="short" maxlength="10" required>
+    </label>
+    <label>Student Name:
+      <input type="text" name="studentName" class="medium" maxlength="20" required>
+    </label>
+    <label>Stage Number:
+      <input type="number" name="stageNumber" class="tiny" max="99" required>
+    </label>
+    <label>Test Number:
+      <input type="number" name="testNumber" class="tiny" max="99" required>
+    </label>
 
-    <h2>Enter 40 Words</h2>
-    <div id="words"></div>
+    <h2>Enter Marks (0 or 1) for 40 Words</h2>
+    <div class="word-grid" id="words"></div>
 
-    <label>Total Score: <input type="number" name="totalScore" required></label><br>
+    <label>Total Score:
+      <input type="number" name="totalScore" class="tiny" max="40" required>
+    </label>
 
     <button type="submit">Submit</button>
     <p id="status"></p>
@@ -31,17 +86,24 @@
     const form = document.getElementById('wordForm');
     const wordsDiv = document.getElementById('words');
 
+    // Create 40 word inputs
     for (let i = 1; i <= 40; i++) {
-      const label = document.createElement('label');
-      label.innerHTML = `Word ${i}: <input type="text" name="word${i}" required><br>`;
-      wordsDiv.appendChild(label);
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = `word${i}`;
+      input.min = '0';
+      input.max = '1';
+      input.required = true;
+      wordsDiv.appendChild(input);
     }
 
     form.addEventListener('submit', async function(e) {
       e.preventDefault();
       const formData = new FormData(form);
       const jsonData = {};
-      formData.forEach((value, key) => { jsonData[key] = value; });
+      formData.forEach((value, key) => {
+        jsonData[key] = value;
+      });
 
       const response = await fetch("https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec", {
         method: "POST",
