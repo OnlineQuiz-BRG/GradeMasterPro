@@ -22,6 +22,7 @@
     button:hover { background-color: #0066cc; }
     #status { margin-top: 20px; text-align: center; font-weight: bold; font-size: 18px; color: green; }
     #confirmation { display: none; text-align: center; padding: 20px; background: #e0ffe0; border: 1px solid #b2d8b2; border-radius: 10px; }
+    #nameError { color: #d8000c; background: #ffd2d2; padding: 4px 8px; margin-bottom: 10px; border-radius: 5px; display: none; }
     @media (max-width: 600px) { .small-input, .tiny-input { width: 100%; } }
   </style>
 </head>
@@ -42,6 +43,8 @@
         <input type="text" name="codeword" id="codeword" maxlength="10" required class="small-input"/>
         <label for="studentName">Student Name</label>
         <input type="text" name="studentName" id="studentName" maxlength="20" required class="small-input" readonly/>
+        <!-- Error message for student name -->
+        <div id="nameError"></div>
         <label for="stageNumber">Stage Number</label>
         <input type="number" name="stageNumber" min="1" max="18" required class="tiny-input"/>
         <label for="testNumber">Test Number</label>
@@ -77,6 +80,7 @@
       const codewordInput = document.getElementById('codeword');
       const studentNameInput = document.getElementById('studentName');
       const submitBtn = document.getElementById('submitBtn');
+      const nameError = document.getElementById('nameError');
 
       // Generate 40 word input boxes with labels W1–W40
       for (let i = 1; i <= 40; i++) {
@@ -114,25 +118,44 @@
       // Autofill Student Name on codeword blur
       codewordInput.addEventListener('blur', async function() {
         const codeword = this.value.trim();
+        nameError.style.display = "none";
         if (!codeword) {
           studentNameInput.value = '';
+          nameError.style.display = "none";
           return;
         }
-        // Disable submit while fetching
         submitBtn.disabled = true;
         studentNameInput.value = 'Looking up...';
         const url = 'https://script.google.com/macros/s/AKfycbxJWxoELcZ4PoQ3wtj0UuHz0ettlQaWQc7zZRMFgkZFQvrsmjQHxXigUwHdQ6l4WsyD/exec?codeword=' + encodeURIComponent(codeword);
         try {
           const res = await fetch(url, {cache: "no-store"});
           const name = (await res.text()).trim();
-          studentNameInput.value = name;
+          if (name) {
+            studentNameInput.value = name;
+            nameError.style.display = "none";
+          } else {
+            studentNameInput.value = '';
+            nameError.textContent = "❌ No student found for the entered codeword. Please check the codeword and try again.";
+            nameError.style.display = "block";
+          }
         } catch {
           studentNameInput.value = '';
+          nameError.textContent = "❌ Unable to lookup student name. Please try again later.";
+          nameError.style.display = "block";
         }
         submitBtn.disabled = false;
       });
 
       form.addEventListener('submit', async function (e) {
+        // Prevent submit if student name is not filled (i.e., codeword didn't match)
+        if (!studentNameInput.value || nameError.style.display === "block") {
+          nameError.textContent = "❌ Please enter a valid codeword to fetch the student name before submitting.";
+          nameError.style.display = "block";
+          studentNameInput.value = '';
+          codewordInput.focus();
+          e.preventDefault();
+          return false;
+        }
         e.preventDefault();
         // Capture student name before reset
         const studentName = studentNameInput.value || "Student";
@@ -155,6 +178,7 @@
           form.reset();
           updateTotal();
           studentNameInput.value = '';
+          nameError.style.display = "none";
         } else {
           alert("❌ Submission failed. Please try again.");
         }
