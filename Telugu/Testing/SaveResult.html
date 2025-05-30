@@ -61,13 +61,16 @@
       font-size: 16px;
       transition: border-color 0.3s ease;
     }
+
     input[type="number"].tiny-input {
       width: 70px;
       text-align: center;
     }
+
     input[type="text"].small-input {
       width: 200px;
     }
+
     input[type="text"]:focus,
     input[type="number"]:focus {
       border-color: #007bff;
@@ -211,9 +214,7 @@
       <!-- Section 2: Word Scores -->
       <div class="section">
         <h3>Enter Word Scores (1 = Correct, 0 = Incorrect)</h3>
-        <div class="word-grid" id="words">
-          <!-- JavaScript will populate this -->
-        </div>
+        <div class="word-grid" id="words"></div>
       </div>
 
       <!-- Section 3: Total Score -->
@@ -238,16 +239,12 @@
     const newEntryBtn = document.getElementById('newEntry');
     const congratsMsg = document.getElementById('congratsMsg');
 
-    // Generate 40 word input boxes with labels W1–W40
+    // Create 40 input boxes for scores
     for (let i = 1; i <= 40; i++) {
       const wrapper = document.createElement('div');
       const label = document.createElement('label');
       label.textContent = 'W' + i;
       label.htmlFor = `word${i}`;
-      label.style.fontSize = '12px';
-      label.style.color = '#004080';
-      label.style.marginBottom = '3px';
-
       const input = document.createElement('input');
       input.type = 'number';
       input.name = `word${i}`;
@@ -257,12 +254,12 @@
       input.required = true;
       input.className = 'tiny-input';
       input.addEventListener('input', updateTotal);
-
       wrapper.appendChild(label);
       wrapper.appendChild(input);
       wordsDiv.appendChild(wrapper);
     }
 
+    // Auto-update total
     function updateTotal() {
       const inputs = wordsDiv.querySelectorAll('input');
       let total = 0;
@@ -273,6 +270,7 @@
       totalInput.value = total;
     }
 
+    // Submit form
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       const formData = new FormData(form);
@@ -281,7 +279,6 @@
         jsonData[key] = value;
       });
 
-      // Replace with your deployed Google Apps Script Web App URL
       const scriptURL = "https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec";
 
       try {
