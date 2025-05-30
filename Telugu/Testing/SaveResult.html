@@ -11,59 +11,80 @@
       margin: 0;
       padding: 0;
     }
+
     .container {
       max-width: 600px;
       margin: auto;
       padding: 20px;
     }
+
     h2 {
-      text-align: center;
+      text-align: Center;
       color: #003366;
     }
+
     form {
-      background: #fff;
+      background: #ffffff;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     .section {
       margin-bottom: 20px;
       padding: 15px;
       border-radius: 10px;
       background: #e9f0fa;
     }
+
     .section h3 {
       margin-top: 0;
       color: #004080;
       font-size: 18px;
     }
+
     label {
       display: block;
       margin-bottom: 5px;
       color: #333;
     }
-    input[type="text"], input[type="number"] {
+
+    input[type="text"] {
       width: 60%;
       padding: 8px;
       margin-bottom: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-    .small-input { width: 80px; }
-    .tiny-input {
+
+      input[type="number"] {
+      width: 20%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .small-input {
       width: 80px;
+    }
+
+    .tiny-input {
+      width: 60px;
       text-align: center;
     }
+
     .word-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
       gap: 10px;
     }
+
     .word-grid div {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
+
     button {
       background-color: #004080;
       color: white;
@@ -74,9 +95,19 @@
       font-size: 16px;
       margin-top: 10px;
     }
+
     button:hover {
       background-color: #0066cc;
     }
+
+    #status {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: green;
+    }
+
     #confirmation {
       display: none;
       text-align: center;
@@ -85,8 +116,10 @@
       border: 1px solid #b2d8b2;
       border-radius: 10px;
     }
+
     @media (max-width: 600px) {
-      .small-input, .tiny-input {
+      .small-input,
+      .tiny-input {
         width: 100%;
       }
     }
@@ -98,7 +131,7 @@
 
     <!-- Confirmation message -->
     <div id="confirmation">
-      <p>🎉 Congratulations <strong><span id="studentNameDisplay"></span></strong>, your Test Score is successfully submitted! 🎉</p>
+      <p>✅ Successfully submitted!</p>
       <button id="newEntry">Submit another Test result</button>
     </div>
 
@@ -108,10 +141,10 @@
       <div class="section">
         <h3>Student Details</h3>
         <label for="codeword">Codeword</label>
-        <input type="text" name="codeword" required class="small-input"/>
+        <input type="text" name="codeword" maxlength="10" required class="small-input"/>
 
         <label for="studentName">Student Name</label>
-        <input type="text" name="studentName" id="studentName" required class="small-input"/>
+        <input type="text" name="studentName" maxlength="20" required class="small-input"/>
 
         <label for="stageNumber">Stage Number</label>
         <input type="number" name="stageNumber" min="1" max="18" required class="tiny-input"/>
@@ -123,7 +156,9 @@
       <!-- Section 2: Word Scores -->
       <div class="section">
         <h3>Enter Word Scores (1 = Correct, 0 = Incorrect)</h3>
-        <div class="word-grid" id="words"></div>
+        <div class="word-grid" id="words">
+          <!-- JavaScript will populate this -->
+        </div>
       </div>
 
       <!-- Section 3: Total Score -->
@@ -135,6 +170,7 @@
       <!-- Submit -->
       <div style="text-align: center;">
         <button type="submit">Submit</button>
+        <div id="status"></div>
       </div>
     </form>
   </div>
@@ -144,60 +180,71 @@
     const wordsDiv = document.getElementById('words');
     const totalInput = document.getElementById('totalScore');
     const confirmation = document.getElementById('confirmation');
-    const nameDisplay = document.getElementById('studentNameDisplay');
     const newEntryBtn = document.getElementById('newEntry');
 
-    // Generate 40 word inputs
+    // Generate 40 word input boxes with labels W1–W40
     for (let i = 1; i <= 40; i++) {
-      const cell = document.createElement('div');
-      const lbl = document.createElement('label');
-      lbl.textContent = 'W' + i;
-      const inp = document.createElement('input');
-      inp.type = 'number';
-      inp.name = 'word' + i;
-      inp.min = 0; inp.max = 1; inp.required = true;
-      inp.className = 'tiny-input';
-      inp.addEventListener('input', updateTotal);
-      cell.append(lbl, inp);
-      wordsDiv.appendChild(cell);
+      const wrapper = document.createElement('div');
+      const label = document.createElement('label');
+      label.textContent = 'W' + i;
+      label.style.fontSize = '12px';
+      label.style.color = '#004080';
+      label.style.marginBottom = '3px';
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = `word${i}`;
+      input.min = '0';
+      input.max = '1';
+      input.required = true;
+      input.className = 'tiny-input';
+      input.addEventListener('input', updateTotal);
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wordsDiv.appendChild(wrapper);
     }
 
     function updateTotal() {
-      let sum = 0;
-      wordsDiv.querySelectorAll('input').forEach(i => sum += (parseInt(i.value) || 0));
-      totalInput.value = sum;
+      const inputs = wordsDiv.querySelectorAll('input');
+      let total = 0;
+      inputs.forEach(input => {
+        const val = parseInt(input.value);
+        if (val === 1) total += 1;
+      });
+      totalInput.value = total;
     }
 
-    form.addEventListener('submit', async e => {
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
-      const data = {};
-      new FormData(form).forEach((v,k) => data[k] = v);
+      const formData = new FormData(form);
+      const jsonData = {};
+      formData.forEach((value, key) => {
+        jsonData[key] = value;
+      });
 
-      try {
-        const res = await fetch('https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        if (!res.ok) throw new Error('Network response not OK');
+      // ✅ Replace with your deployed Google Apps Script Web App URL
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec", {
+        method: "POST",
+        body: JSON.stringify(jsonData),
+      });
 
-        // Inject name and show confirmation
-        nameDisplay.textContent = data.studentName || 'Student';
-        form.style.display = 'none';
-        confirmation.style.display = 'block';
+      if (response.ok) {
+        form.style.display = "none";
+        confirmation.style.display = "block";
         form.reset();
         updateTotal();
-
-      } catch (err) {
-        alert('❌ Submission failed. Please try again.');
-        console.error(err);
+      } else {
+        alert("❌ Submission failed. Please try again.");
       }
     });
 
     newEntryBtn.addEventListener('click', () => {
-      confirmation.style.display = 'none';
-      form.style.display = 'block';
+      confirmation.style.display = "none";
+      form.style.display = "block";
     });
   </script>
 </body>
 </html>
+
+
