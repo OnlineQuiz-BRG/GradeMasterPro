@@ -123,10 +123,10 @@
     <h2>Telugu Dictation - Student Test Scores</h2>
 
     <!-- Confirmation message -->
-    <div id="confirmation">
-      <p> 🎉 Congratulations <strong><span id="studentNameDisplay"></span></strong>, Your Test Score is Successfully submitted! 🎉</p>
-      <button id="newEntry">Submit another Test result</button>
-    </div>
+   <div id="confirmation">
+   <p id="confirmationMessage"></p>
+   <button id="newEntry">Submit another Test result</button>
+   </div>
 
     <!-- Form -->
     <form id="wordForm">
@@ -226,11 +226,15 @@
       });
 
       if (response.ok) {
-        form.style.display = "none";
-        confirmation.style.display = "block";
-        nameDisplay.textContent = studentName;
-        form.reset();
-        updateTotal();
+      const studentName = jsonData.studentName || 'Student';
+      const confirmationMessage = document.getElementById("confirmationMessage");
+      confirmationMessage.innerHTML = `🎉 Congratulations <strong>${studentName}</strong>, Your Test Score is Successfully submitted! 🎉`;
+
+      form.style.display = "none";
+      confirmation.style.display = "block";
+      form.reset();
+      updateTotal();
+      }
       } else {
         alert("❌ Submission failed. Please try again.");
       }
