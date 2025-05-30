@@ -2,6 +2,327 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telugu Dictation - Student Test Scores</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f2f6ff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #003366;
+      margin-bottom: 1rem;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #e9f0fa;
+    }
+
+    .section h3 {
+      margin-top: 0;
+      color: #004080;
+      font-size: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 60%;
+      padding: 8px 10px;
+      margin-bottom: 10px;
+      border: 2px solid #004080;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+    input[type="number"].tiny-input {
+      width: 70px;
+      text-align: center;
+    }
+    input[type="text"].small-input {
+      width: 200px;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: #007bff;
+      outline: none;
+      box-shadow: 0 0 6px #007bffaa;
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+      gap: 10px;
+    }
+
+    .word-grid div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .word-grid label {
+      font-size: 12px;
+      color: #004080;
+      margin-bottom: 4px;
+    }
+
+    button {
+      background-color: #004080;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background-color: #0066cc;
+    }
+
+    #status {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: green;
+    }
+
+    #confirmation {
+      display: none;
+      text-align: center;
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #4caf50, #81c784);
+      border-radius: 15px;
+      color: white;
+      box-shadow: 0 0 20px rgba(72, 187, 120, 0.7);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: 0.03em;
+      animation: fadeScaleIn 0.7s ease forwards;
+      user-select: none;
+    }
+
+    #confirmation button {
+      background: white;
+      color: #4caf50;
+      margin-top: 25px;
+      padding: 12px 30px;
+      font-weight: 600;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.6);
+      font-size: 18px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    #confirmation button:hover {
+      background-color: #388e3c;
+      color: white;
+      box-shadow: 0 6px 20px rgba(56, 142, 60, 0.9);
+    }
+
+    @keyframes fadeScaleIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      input[type="text"].small-input,
+      input[type="number"].tiny-input {
+        width: 100%;
+      }
+      .word-grid {
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Telugu Dictation - Student Test Scores</h2>
+
+    <!-- Confirmation message -->
+    <div id="confirmation" role="alert" aria-live="polite">
+      <p id="congratsMsg">✅ Successfully submitted!</p>
+      <button id="newEntry" aria-label="Submit another test result">Submit another Test result</button>
+    </div>
+
+    <!-- Form -->
+    <form id="wordForm" aria-describedby="formInstructions">
+      <!-- Section 1: Basic Info -->
+      <div class="section">
+        <h3>Student Details</h3>
+        <label for="codeword">Codeword</label>
+        <input type="text" id="codeword" name="codeword" maxlength="10" required class="small-input" />
+
+        <label for="studentName">Student Name</label>
+        <input type="text" id="studentName" name="studentName" maxlength="20" required class="small-input" />
+
+        <label for="stageNumber">Stage Number</label>
+        <input type="number" id="stageNumber" name="stageNumber" min="1" max="18" required class="tiny-input" />
+
+        <label for="testNumber">Test Number</label>
+        <input type="number" id="testNumber" name="testNumber" min="1" max="50" required class="tiny-input" />
+      </div>
+
+      <!-- Section 2: Word Scores -->
+      <div class="section">
+        <h3>Enter Word Scores (1 = Correct, 0 = Incorrect)</h3>
+        <div class="word-grid" id="words">
+          <!-- JavaScript will populate this -->
+        </div>
+      </div>
+
+      <!-- Section 3: Total Score -->
+      <div class="section">
+        <h3>Total Score</h3>
+        <input type="number" name="totalScore" id="totalScore" readonly class="tiny-input" aria-live="polite" />
+      </div>
+
+      <!-- Submit -->
+      <div style="text-align: center;">
+        <button type="submit" aria-label="Submit test results">Submit</button>
+        <div id="status" role="status" aria-live="polite"></div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('wordForm');
+    const wordsDiv = document.getElementById('words');
+    const totalInput = document.getElementById('totalScore');
+    const confirmation = document.getElementById('confirmation');
+    const newEntryBtn = document.getElementById('newEntry');
+    const congratsMsg = document.getElementById('congratsMsg');
+
+    // Generate 40 word input boxes with labels W1–W40
+    for (let i = 1; i <= 40; i++) {
+      const wrapper = document.createElement('div');
+      const label = document.createElement('label');
+      label.textContent = 'W' + i;
+      label.htmlFor = `word${i}`;
+      label.style.fontSize = '12px';
+      label.style.color = '#004080';
+      label.style.marginBottom = '3px';
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.name = `word${i}`;
+      input.id = `word${i}`;
+      input.min = '0';
+      input.max = '1';
+      input.required = true;
+      input.className = 'tiny-input';
+      input.addEventListener('input', updateTotal);
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      wordsDiv.appendChild(wrapper);
+    }
+
+    function updateTotal() {
+      const inputs = wordsDiv.querySelectorAll('input');
+      let total = 0;
+      inputs.forEach(input => {
+        const val = parseInt(input.value);
+        if (val === 1) total += 1;
+      });
+      totalInput.value = total;
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const jsonData = {};
+      formData.forEach((value, key) => {
+        jsonData[key] = value;
+      });
+
+      // Replace with your deployed Google Apps Script Web App URL
+      const scriptURL = "https://script.google.com/macros/s/AKfycbwI85iJipqUs5f7-KLYY3KJFgrdl1dHNo2202qPukPGKEw-E70f4YhOPBkC2Q19bcrm9w/exec";
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify(jsonData),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        if (response.ok) {
+          const name = jsonData['studentName'] || 'Student';
+          congratsMsg.innerHTML = `🎉 Congratulations <strong>${name}</strong>, your Test results are submitted successfully!`;
+
+          form.style.display = "none";
+          confirmation.style.display = "block";
+          form.reset();
+          updateTotal();
+        } else {
+          alert("❌ Submission failed. Please try again.");
+        }
+      } catch (error) {
+        alert("❌ Submission failed due to network error. Please try again.");
+        console.error(error);
+      }
+    });
+
+    newEntryBtn.addEventListener('click', () => {
+      confirmation.style.display = "none";
+      form.style.display = "block";
+      congratsMsg.innerHTML = '✅ Successfully submitted!';
+    });
+  </script>
+</body>
+</html>
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Telugu Dictation - Student Test Scores</title>
   <style>
@@ -246,3 +567,4 @@
   </script>
 </body>
 </html>
+ -->
