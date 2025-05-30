@@ -11,44 +11,37 @@
       margin: 0;
       padding: 0;
     }
-
     .container {
       max-width: 600px;
       margin: auto;
       padding: 20px;
     }
-
     h2 {
       text-align: Center;
       color: #003366;
     }
-
     form {
       background: #ffffff;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
     .section {
       margin-bottom: 20px;
       padding: 15px;
       border-radius: 10px;
       background: #e9f0fa;
     }
-
     .section h3 {
       margin-top: 0;
       color: #004080;
       font-size: 18px;
     }
-
     label {
       display: block;
       margin-bottom: 5px;
       color: #333;
     }
-
     input[type="text"] {
       width: 60%;
       padding: 8px;
@@ -56,8 +49,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
-      input[type="number"] {
+    input[type="number"] {
       width: 50%;
       padding: 8px;
       margin-bottom: 10px;
@@ -67,24 +59,20 @@
     .small-input {
       width: 80px;
     }
-
     .tiny-input {
       width: 60px;
       text-align: center;
     }
-
     .word-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
       gap: 10px;
     }
-
     .word-grid div {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-
     button {
       background-color: #004080;
       color: white;
@@ -95,11 +83,9 @@
       font-size: 16px;
       margin-top: 10px;
     }
-
     button:hover {
       background-color: #0066cc;
     }
-
     #status {
       margin-top: 20px;
       text-align: center;
@@ -107,7 +93,6 @@
       font-size: 18px;
       color: green;
     }
-
     #confirmation {
       display: none;
       text-align: center;
@@ -116,7 +101,6 @@
       border: 1px solid #b2d8b2;
       border-radius: 10px;
     }
-
     @media (max-width: 600px) {
       .small-input,
       .tiny-input {
@@ -128,23 +112,21 @@
 <body>
   <div class="container">
     <h2>Telugu Dictation - Student Test Scores</h2>
-
     <!-- Confirmation message -->
     <div id="confirmation">
-      <p>✅ Congratulatuons, Your Test Score is Successfully submitted!</p>
+      <p id="confirmation-message">✅ Congratulations, Your Test Score is Successfully submitted!</p>
       <button id="newEntry">Submit another Test result</button>
     </div>
-
     <!-- Form -->
     <form id="wordForm">
       <!-- Section 1: Basic Info -->
       <div class="section">
         <h3>Student Details</h3>
         <label for="codeword">Codeword</label>
-        <input type="text" name="codeword" maxlength="10" required class="small-input"/>
+        <input type="text" name="codeword" id="codeword" maxlength="10" required class="small-input"/>
 
         <label for="studentName">Student Name</label>
-        <input type="text" name="studentName" maxlength="20" required class="small-input"/>
+        <input type="text" name="studentName" id="studentName" maxlength="20" required class="small-input" readonly/>
 
         <label for="stageNumber">Stage Number</label>
         <input type="number" name="stageNumber" min="1" max="18" required class="tiny-input"/>
@@ -152,7 +134,6 @@
         <label for="testNumber">Test Number</label>
         <input type="number" name="testNumber" min="1" max="50" required class="tiny-input"/>
       </div>
-
       <!-- Section 2: Word Scores -->
       <div class="section">
         <h3>Enter Word Scores (1 = Correct, 0 = Incorrect)</h3>
@@ -160,13 +141,11 @@
           <!-- JavaScript will populate this -->
         </div>
       </div>
-
       <!-- Section 3: Total Score -->
       <div class="section">
         <h3>Total Score</h3>
         <input type="number" name="totalScore" id="totalScore" readonly class="tiny-input"/>
       </div>
-
       <!-- Submit -->
       <div style="text-align: center;">
         <button type="submit">Submit</button>
@@ -174,13 +153,15 @@
       </div>
     </form>
   </div>
-
   <script>
     const form = document.getElementById('wordForm');
     const wordsDiv = document.getElementById('words');
     const totalInput = document.getElementById('totalScore');
     const confirmation = document.getElementById('confirmation');
+    const confirmationMessage = document.getElementById('confirmation-message');
     const newEntryBtn = document.getElementById('newEntry');
+    const codewordInput = document.getElementById('codeword');
+    const studentNameInput = document.getElementById('studentName');
 
     // Generate 40 word input boxes with labels W1–W40
     for (let i = 1; i <= 40; i++) {
@@ -215,6 +196,24 @@
       totalInput.value = total;
     }
 
+    // Autofill Student Name on codeword blur
+    codewordInput.addEventListener('blur', async function() {
+      const codeword = this.value.trim();
+      if (!codeword) {
+        studentNameInput.value = '';
+        return;
+      }
+      // Replace with your deployed Apps Script Web App URL
+      const url = 'https://script.google.com/macros/s/AKfycbxJWxoELcZ4PoQ3wtj0UuHz0ettlQaWQc7zZRMFgkZFQvrsmjQHxXigUwHdQ6l4WsyD/exec?codeword=' + encodeURIComponent(codeword);
+      try {
+        const res = await fetch(url);
+        const name = await res.text();
+        studentNameInput.value = name;
+      } catch {
+        studentNameInput.value = '';
+      }
+    });
+
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       const formData = new FormData(form);
@@ -231,9 +230,13 @@
 
       if (response.ok) {
         form.style.display = "none";
+        // Custom confirmation message with student name
+        const studentName = studentNameInput.value || "Student";
+        confirmationMessage.innerHTML = `✅ Congratulations <b>${studentName}</b>, your test score is Successfully submitted!`;
         confirmation.style.display = "block";
         form.reset();
         updateTotal();
+        studentNameInput.value = '';
       } else {
         alert("❌ Submission failed. Please try again.");
       }
