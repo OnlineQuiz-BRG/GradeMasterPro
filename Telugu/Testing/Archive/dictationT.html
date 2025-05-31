@@ -16,40 +16,34 @@
 
 .header {
   position: relative;
-  padding: 1rem 3.5rem 1rem 1rem; /* right padding gives space for buttons */
+  padding-top: 1rem;
   text-align: center;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
 }
 
 .btn-group {
   position: absolute;
-  top: 1rem;
+  top: 0.5rem;
   right: 1rem;
   display: flex;
-  flex-direction: row;
   gap: 0.5rem;
 }
 
-/* Optional: Improve touch targets and responsiveness */
-.btn-group button {
-  padding: 0.5rem 0.8rem;
-  font-size: 0.9rem;
+.header h1 {
+  margin-top: 3rem; /* push it below the buttons */
+  font-size: 1.5rem;
+  color: #333;
 }
 
-/* Responsive fix for very small screens */
-@media (max-width: 400px) {
+/* Responsive adjustments */
+@media (max-width: 480px) {
   .header h1 {
     font-size: 1.2rem;
+    margin-top: 3.5rem;
   }
-  .btn-group {
-    flex-direction: column;
-    top: 0.5rem;
-    right: 0.5rem;
+
+  .btn-group button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
   }
 }
 
@@ -132,13 +126,12 @@
 </head>
 <body>
   <div class="header">
-    <h1 id="stageInfo">Loading...</h1>
     <div class="btn-group">
       <button class="back-btn" onclick="goBack()">Back</button>
       <button class="logout-btn" onclick="confirmLogout()">Logout</button>
     </div>
-  </div>
-
+    <h1 id="stageInfo">Loading...</h1>
+  </div>  
   <button id="startBtn">Start Test</button>
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   <audio id="bgMusic" src="calm-music.mp3" loop></audio>
@@ -147,18 +140,21 @@
   <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
 
   <script>
-    function confirmLogout() {
-      const confirmExit = confirm("Are you sure you want to logout and return to the main page?");
-      if (confirmExit) {
-        localStorage.clear();
-        window.location.href = "loginT.html";
-      }
-    }
 
     function goBack() {
       window.location.href = "Stage1T.html";
     }
+    function confirmLogout() {
+      const confirmExit = confirm("Are you sure you want to logout and return to the login page?");
+      if (confirmExit) {
+        localStorage.clear();
+        window.location.href = "loginT.html"; // to login page
+      }
+    }
+</script>
 
+
+    
     const stageSheetMap = {
       1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
       2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
