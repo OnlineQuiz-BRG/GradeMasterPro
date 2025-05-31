@@ -85,7 +85,7 @@
   <audio id="bgMusic" src="calm-music.mp3" loop></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
-  <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
+  <button id="submitBtn" style="display:none;">Finish</button>
 
   <script>
     const stageSheetMap = {
@@ -112,7 +112,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const stage = parseInt(urlParams.get("stage"), 10);
     const test = parseInt(urlParams.get("test"), 10);
-    const codeword = urlParams.get("codeword") || "unknown";
 
     const stageInfoEl = document.getElementById("stageInfo");
 
@@ -194,17 +193,16 @@
             wordBox.scrollTop = wordBox.scrollHeight;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 1000); // 10 seconds per word
+          }, 1000); // 1 second per word
         });
 
         submitBtn.addEventListener("click", () => {
-          // const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
-          window.location.href = resultUrl;
+          submitBtn.textContent = "Test Finished!";
+          submitBtn.disabled = true;
         });
       })
       .catch(err => {
         console.error(err);
-        // alert("Failed to fetch dictation data.");
       });
   </script>
 </body>
