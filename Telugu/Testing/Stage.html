@@ -130,7 +130,7 @@
         btn.className = "testBtn";
         btn.textContent = `Test ${i}`;
         btn.addEventListener("click", () => {
-          const url = `dictationT.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
+          const url = `dictation.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
           localStorage.setItem("testNumber", i);
           window.location.href = url;
         });
