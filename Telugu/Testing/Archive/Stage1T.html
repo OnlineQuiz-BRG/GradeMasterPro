@@ -114,7 +114,7 @@
     // Clear localStorage and redirect if user uses back button directly
     if (performance.navigation.type === 2) {
       localStorage.clear();
-      location.href = "loginT.html";
+      location.href = "TeluguT.html";
     }
 
     function getQueryParam(param) {
@@ -137,7 +137,7 @@
     });
 
     document.getElementById("backBtn").addEventListener("click", () => {
-      window.location.href = "loginT.html";
+      window.location.href = "TeluguT.html";
     });
 
     if (!codeword || !studentName) {
