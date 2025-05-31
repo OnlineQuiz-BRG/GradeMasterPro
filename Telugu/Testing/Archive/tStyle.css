@@ -25,6 +25,7 @@ body {
   display: inline-block;
   backdrop-filter: blur(4px);
   margin-bottom: 30px;
+  box-sizing: border-box;
   /* Removed min-height and flexbox to allow natural height */
 }
 
