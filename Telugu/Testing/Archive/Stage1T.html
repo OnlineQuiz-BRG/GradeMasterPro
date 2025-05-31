@@ -89,6 +89,7 @@
   <div id="errorMsg" class="error"></div>
 
   <script>
+    // Clear localStorage and redirect if user uses back button
     if (performance.navigation.type === 2) {
       localStorage.clear();
       location.href = "loginT.html";
@@ -119,6 +120,7 @@
         window.location.href = "loginT.html";
       }, 3000);
     } else {
+      // Save to localStorage for future use
       localStorage.setItem("codeword", codeword);
       localStorage.setItem("studentName", studentName);
       localStorage.setItem("stageNumber", stage);
@@ -130,15 +132,12 @@
       const completedKey = `completedTests_${studentName}_Stage${stage}`;
       const completedTests = JSON.parse(localStorage.getItem(completedKey) || "[]");
 
-      const allCompleted = completedTests.length === totalTests;
-
       for (let i = 1; i <= totalTests; i++) {
         const btn = document.createElement("button");
         btn.className = "testBtn";
         btn.textContent = `Test ${i}`;
 
-        const isCompleted = completedTests.includes(i);
-        if (isCompleted && !allCompleted) {
+        if (completedTests.includes(i)) {
           btn.disabled = true;
         }
 
