@@ -63,12 +63,18 @@
       font-weight: bold;
       border-radius: 6px;
       transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards;
     }
 
     .highlight {
       background-color: #ffe8cc;
       border-left: 7px solid #ff9900;
       box-shadow: 0 0 10px rgba(255, 153, 0, 0.4);
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
   </style>
 </head>
@@ -158,6 +164,7 @@
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
           bgMusic.play();
+          audioPlayer.play();
 
           let current = 0;
           let previousCard = null;
@@ -166,7 +173,6 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
-              wordBox.innerHTML = ""; // Clear wordBox after test
               audioPlayer.style.display = "none";
               bgMusic.pause();
               submitBtn.style.display = "inline-block";
@@ -176,11 +182,12 @@
             const wordCard = document.createElement("div");
             wordCard.className = "wordCard highlight";
             wordCard.textContent = `${current + 1}. ${words[current]}`;
+            wordBox.appendChild(wordCard);
 
             if (previousCard) previousCard.classList.remove("highlight");
-            wordBox.prepend(wordCard);
             previousCard = wordCard;
 
+            wordBox.scrollTop = wordBox.scrollHeight;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
           }, 1000);
@@ -198,4 +205,3 @@
   </script>
 </body>
 </html>
-
