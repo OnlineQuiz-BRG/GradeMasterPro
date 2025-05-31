@@ -14,31 +14,47 @@
       margin: 0;
     }
 
-    .header {
-      display: flex;
-      justify-content: center; /* Center horizontally */
-      align-items: center;
-      padding: 1rem;
-      background-color: transparent;
-      border-bottom: none;
-      position: relative; /* to position buttons */
-    }
+.header {
+  position: relative;
+  padding: 1rem 3.5rem 1rem 1rem; /* right padding gives space for buttons */
+  text-align: center;
+}
 
-    .header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      text-align: center; /* center text inside h1 */
-    }
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
 
-/* Move button group to top right */
-    .btn-group {
-      position: absolute;
-      right: 1rem;
-      top: 1rem;
-      display: flex;
-      gap: 0.5rem;
-    }
+.btn-group {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
 
+/* Optional: Improve touch targets and responsiveness */
+.btn-group button {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* Responsive fix for very small screens */
+@media (max-width: 400px) {
+  .header h1 {
+    font-size: 1.2rem;
+  }
+  .btn-group {
+    flex-direction: column;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+}
+
+    
+    
     .logout-btn, .back-btn {
       background-color: #cc3300;
       color: white;
