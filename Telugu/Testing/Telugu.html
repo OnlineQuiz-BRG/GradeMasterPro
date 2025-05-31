@@ -15,13 +15,13 @@
 <script>
   // Redirect if not logged in
   if (localStorage.getItem('loggedIn') !== 'true') {
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/login.html';
   }
 
   // Logout action
   document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('loggedIn');
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/login.html';
   });
 </script>
 
@@ -88,7 +88,7 @@
 
         if (loggedIn !== 'true' || !codeword) {
           alert('Please login first.');
-          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/login.html';
           return;
         }
 
