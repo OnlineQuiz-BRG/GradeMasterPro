@@ -194,7 +194,7 @@
             wordBox.scrollTop = wordBox.scrollHeight;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000); // 10 seconds per word
+          }, 1000); // 10 seconds per word
         });
 
         submitBtn.addEventListener("click", () => {
