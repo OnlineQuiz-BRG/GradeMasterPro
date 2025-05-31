@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telugu Dictation Practice</title>
+  <link rel="stylesheet" href="tStyle.css" />
+</head>
+<body>
+
+<button id="logoutBtn" style="position:absolute; top:1rem; right:1rem; padding:0.5rem 1rem;">
+  Logout
+</button>
+
+<script>
+  // Redirect if not logged in
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Telugu.html';
+  }
+ 
+  // Logout action
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('loggedIn');
+    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+  });
+</script>
+
+<div class="container">
+
+  <!-- Title Card -->
+  <div class="title-card">
+    <h1 class="main-title">Welcome to Telugu Dictation Practice</h1>
+    <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
+  </div>
+
+  <h2 id="welcomeMessage"></h2>
+  <script>
+    const name = localStorage.getItem("studentName");
+    if (name) {
+      document.getElementById("welcomeMessage").textContent = "Welcome, " + name + "!";
+    }
+  </script>
+
+  <!-- Daily Dictation Card -->
+  <div class="card stage-card">
+    <h3>Daily Dictation</h3>
+    <div class="stage-buttons" id="stageContainer">
+      <!-- Buttons will be injected by script -->
+    </div>
+  </div>
+
+  <script>
+    const container = document.getElementById('stageContainer');
+    const totalStages = 18;
+    
+    for (let i = 1; i <= totalStages; i++) {
+      const stageNum = i.toString().padStart(2, '0'); // Stage01, Stage02, ...
+      const btn = document.createElement('a');
+      btn.className = 'card-button';
+      btn.href = '#';
+      btn.textContent = `Stage ${i}`;
+
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const loggedIn = localStorage.getItem('loggedIn');
+        const codeword = localStorage.getItem('codeword');
+        
+        if (loggedIn !== 'true' || !codeword) {
+          alert('Please login first.');
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/loginT.html';
+          return;
+        }
+        localStorage.setItem("stageNumber", i);
+        window.location.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Stage${i}.html`;
+      });
+      container.appendChild(btn);
+    }
+  </script>
+
+</div>
+</body>
+</html>
+
+        
