@@ -60,27 +60,49 @@
       margin-top: 2rem;
     }
 
-    #logoutBtn {
+    #topButtons {
       position: absolute;
       top: 1rem;
       right: 1rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    #logoutBtn,
+    #backBtn {
       padding: 0.6rem 1rem;
       font-size: 0.9rem;
-      background-color: #cc0000;
-      color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
+    #logoutBtn {
+      background-color: #cc0000;
+      color: white;
+    }
+
     #logoutBtn:hover {
       background-color: #990000;
+    }
+
+    #backBtn {
+      background-color: #999900;
+      color: white;
+    }
+
+    #backBtn:hover {
+      background-color: #666600;
     }
   </style>
 </head>
 <body>
-  <button id="logoutBtn">Logout</button>
+
+  <div id="topButtons">
+    <button id="backBtn">Back</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
 
   <h1 id="stageTitle">Stage - Dictation Tests</h1>
   <div id="studentNameDisplay"></div>
@@ -89,7 +111,7 @@
   <div id="errorMsg" class="error"></div>
 
   <script>
-    // Clear localStorage and redirect if user uses back button
+    // Clear localStorage and redirect if user uses back button directly
     if (performance.navigation.type === 2) {
       localStorage.clear();
       location.href = "loginT.html";
@@ -114,13 +136,16 @@
       window.location.href = "loginT.html";
     });
 
+    document.getElementById("backBtn").addEventListener("click", () => {
+      window.location.href = "loginT.html";
+    });
+
     if (!codeword || !studentName) {
       errorMsg.textContent = "Codeword or student name missing. Please return to the login page.";
       setTimeout(() => {
         window.location.href = "loginT.html";
       }, 3000);
     } else {
-      // Save to localStorage for future use
       localStorage.setItem("codeword", codeword);
       localStorage.setItem("studentName", studentName);
       localStorage.setItem("stageNumber", stage);
