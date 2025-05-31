@@ -14,47 +14,43 @@
       margin: 0;
     }
 
-.header {
-  position: relative;
-  padding: 1rem 3.5rem 1rem 1rem; /* right padding gives space for buttons */
-  text-align: center;
-}
+    .header {
+      position: relative;
+      padding: 1rem 3.5rem 1rem 1rem;
+      text-align: center;
+    }
 
-.header h1 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #333;
-}
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
 
-.btn-group {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-}
+    .btn-group {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
 
-/* Optional: Improve touch targets and responsiveness */
-.btn-group button {
-  padding: 0.5rem 0.8rem;
-  font-size: 0.9rem;
-}
+    .btn-group button {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
+    }
 
-/* Responsive fix for very small screens */
-@media (max-width: 400px) {
-  .header h1 {
-    font-size: 1.2rem;
-  }
-  .btn-group {
-    flex-direction: column;
-    top: 0.5rem;
-    right: 0.5rem;
-  }
-}
+    @media (max-width: 400px) {
+      .header h1 {
+        font-size: 1.2rem;
+      }
+      .btn-group {
+        flex-direction: column;
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+    }
 
-    
-    
     .logout-btn, .back-btn {
       background-color: #cc3300;
       color: white;
@@ -114,9 +110,8 @@
       font-size: 1.5rem;
       font-weight: bold;
       border-radius: 6px;
-      transition: all 0.3s ease;
       opacity: 0;
-      animation: fadeIn 1s ease forwards;
+      animation: fadeIn 0.8s ease forwards;
     }
 
     .highlight {
@@ -148,8 +143,7 @@
 
   <script>
     function confirmLogout() {
-      const confirmExit = confirm("Are you sure you want to logout and return to the main page?");
-      if (confirmExit) {
+      if (confirm("Are you sure you want to logout and return to the main page?")) {
         localStorage.clear();
         window.location.href = "loginT.html";
       }
@@ -183,7 +177,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const stage = parseInt(urlParams.get("stage"), 10);
     const test = parseInt(urlParams.get("test"), 10);
-
     const stageInfoEl = document.getElementById("stageInfo");
 
     if (!stage || !test || !stageSheetMap[stage]) {
@@ -245,7 +238,6 @@
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
-              wordBox.innerHTML = "";
               progressEl.textContent = "Test Completed!";
               audioPlayer.style.display = "none";
               bgMusic.pause();
@@ -256,6 +248,7 @@
             const wordCard = document.createElement("div");
             wordCard.className = "wordCard highlight";
             wordCard.textContent = `${current + 1}. ${words[current]}`;
+
             if (previousCard) previousCard.classList.remove("highlight");
             previousCard = wordCard;
 
@@ -266,8 +259,8 @@
         });
       })
       .catch(err => {
-        console.error(err);
-        alert("Failed to fetch dictation data.");
+        console.error("Fetch error:", err);
+        stageInfoEl.textContent = "Error loading test data.";
       });
   </script>
 </body>
