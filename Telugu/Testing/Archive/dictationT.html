@@ -85,7 +85,7 @@
   <audio id="bgMusic" src="calm-music.mp3" loop></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
-  <button id="submitBtn" style="display:none;">Finish</button>
+  <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
 
   <script>
     const stageSheetMap = {
@@ -175,34 +175,29 @@
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
+              wordBox.innerHTML = "";  // Clear all word cards
               progressEl.textContent = "Test Completed!";
               audioPlayer.style.display = "none";
               bgMusic.pause();
-              submitBtn.style.display = "inline-block";
+              submitBtn.style.display = "none"; // Hidden since no result recording
               return;
             }
 
             const wordCard = document.createElement("div");
             wordCard.className = "wordCard highlight";
             wordCard.textContent = `${current + 1}. ${words[current]}`;
-            wordBox.appendChild(wordCard);
-
             if (previousCard) previousCard.classList.remove("highlight");
             previousCard = wordCard;
 
-            wordBox.scrollTop = wordBox.scrollHeight;
+            wordBox.prepend(wordCard);  // Add new word on top
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 1000); // 1 second per word
-        });
-
-        submitBtn.addEventListener("click", () => {
-          submitBtn.textContent = "Test Finished!";
-          submitBtn.disabled = true;
+          }, 1000); // 1 second per word (adjust if needed)
         });
       })
       .catch(err => {
         console.error(err);
+        alert("Failed to fetch dictation data.");
       });
   </script>
 </body>
