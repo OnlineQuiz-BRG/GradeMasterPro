@@ -95,8 +95,8 @@
       return params.get(param);
     }
 
-    // Get stage, studentName, and codeword
-    const stage = getQueryParam("stage") || "1";
+    // Get values from URL or fallback to localStorage
+    const stage = getQueryParam("stage") || localStorage.getItem("stageNumber") || "1";
     const codeword = getQueryParam("codeword") || localStorage.getItem("codeword");
     const studentName = getQueryParam("studentName") || localStorage.getItem("studentName");
 
@@ -106,8 +106,7 @@
     const stageTitle = document.getElementById("stageTitle");
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("codeword");
-      localStorage.removeItem("studentName");
+      localStorage.clear();
       window.location.href = "loginT.html";
     });
 
@@ -117,8 +116,10 @@
         window.location.href = "loginT.html";
       }, 3000);
     } else {
+      // Save back to localStorage in case user came from URL
       localStorage.setItem("codeword", codeword);
       localStorage.setItem("studentName", studentName);
+      localStorage.setItem("stageNumber", stage);
 
       nameDisplay.textContent = `Welcome, ${studentName}!`;
       stageTitle.textContent = `Stage ${stage} - Dictation Tests`;
