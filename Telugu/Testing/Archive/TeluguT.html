@@ -5,115 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Telugu Dictation Practice</title>
   <link rel="stylesheet" href="tStyle.css" />
+  <style>
+    #logoutBtn {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.6rem 1rem;
+      background-color: #cc0000;
+      color: white;
+      font-size: .9rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      z-index: 1000;
+    }
+
+    @media (max-width: 600px) {
+      #logoutBtn {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <button id="logoutBtn" style="
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.6rem 1rem;
-  background-color: #cc0000;
-  color: white;
-  font-size: .9rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-">
-  Logout
-</button>
+  <button id="logoutBtn">Logout</button>
   
-<script>
-  // Redirect if not logged in
-  if (localStorage.getItem('loggedIn') !== 'true') {
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
-  }
-
-  // Logout action
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('loggedIn');
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
-  });
-</script>
-
-<div class="container">
-
-  <!-- Title Card -->
-  <div class="title-card">
-    <h1 class="main-title">Welcome to Telugu Dictation Practice</h1>
-    <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
-  </div>
-
-  <h2 id="welcomeMessage"></h2>
   <script>
-    const name = localStorage.getItem("studentName");
-    if (name) {
-      document.getElementById("welcomeMessage").textContent = "Welcome, " + name + "!";
+    // Redirect if not logged in
+    if (localStorage.getItem('loggedIn') !== 'true') {
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
     }
+
+    // Logout action
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('loggedIn');
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
+    });
   </script>
 
-  <!-- Daily Dictation Card -->
-  <div class="card stage-card">
-    <h3>Daily Dictation</h3>
-    <div class="stage-buttons" id="stageContainer">
-      <!-- Buttons will be injected by script -->
+  <div class="container">
+
+    <!-- Title Card -->
+    <div class="title-card">
+      <h1 class="main-title">Welcome to Telugu Dictation Practice</h1>
+      <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
     </div>
+
+    <h2 id="welcomeMessage"></h2>
+    <script>
+      const name = localStorage.getItem("studentName");
+      if (name) {
+        document.getElementById("welcomeMessage").textContent = "Welcome, " + name + "!";
+      }
+    </script>
+
+    <!-- Daily Dictation Card -->
+    <div class="card stage-card">
+      <h3>Daily Dictation</h3>
+      <div class="stage-buttons" id="stageContainer">
+        <!-- Buttons will be injected by script -->
+      </div>
+    </div>
+
+    <script>
+      const stageSheetMap = {
+        1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
+        2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
+        3: "1GYLsF3Dv1dNgS6aj5X4U2bcQrBHe0Sx_8j8Y5X0wtOk",
+        4: "1tYvRRLQvle1cl1mdrwHvM0RQL0lCvdSij0y7NVE0Uug",
+        5: "1h7H4jvUZCQLubVE3XCnPehS_nN_8Vf5oPsI9Nearjxk",
+        6: "1lBa8s5xz7L0QUAUyhKSbZqnfiBDwD0unICDF1QAkVDI",
+        7: "1ZtACGJ85b5NQISrFbGp48oc-ksE6GkFx_qEClz3LGrs",
+        8: "1UnsfTc1pxqmkdYerJUW7CA_QEMdON8Jq-BeNijyA7Cg",
+        9: "1-peAZC9FsTKVK-x2owVfB-hYQV4mmi6uLcoS_gvjyDU",
+        10: "1DHrq99gPe7DZtPfApV2Dw2zZuVYNIC_5-Qkv52VkONI",
+        11: "19Z6PN_2eV-T8QnRRSgKr-prLzjFqTT7_lVVc_uy5Bys",
+        12: "12c7Sb5fFixJ1R3OjGJy4mHmfqFhfPVyYSWhdyiye9D4",
+        13: "1H6L7-CXNEKi1dkVzpXqMBwedSWDTwEtgUlVdhM4Quuk",
+        14: "1sQGv-D4m5zuyd8D2LYhuCkmTyHbw9QB0FIL5XJaaK6o",
+        15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
+        16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
+        17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
+        18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+      };
+
+      const container = document.getElementById('stageContainer');
+      const totalStages = 18;
+
+      for (let i = 1; i <= totalStages; i++) {
+        const btn = document.createElement('a');
+        btn.className = 'card-button';
+        btn.href = '#';
+        btn.textContent = `Stage ${i}`;
+
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          const loggedIn = localStorage.getItem('loggedIn');
+          const codeword = localStorage.getItem('codeword');
+
+          if (loggedIn !== 'true' || !codeword) {
+            alert('Please login first.');
+            window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
+            return;
+          }
+
+          localStorage.setItem('stageNumber', i);
+          localStorage.setItem('sheetId', stageSheetMap[i]);
+
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/Stage1T.html';
+        });
+
+        container.appendChild(btn);
+      }
+    </script>
+
   </div>
-
-  <script>
-    const stageSheetMap = {
-      1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
-      2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
-      3: "1GYLsF3Dv1dNgS6aj5X4U2bcQrBHe0Sx_8j8Y5X0wtOk",
-      4: "1tYvRRLQvle1cl1mdrwHvM0RQL0lCvdSij0y7NVE0Uug",
-      5: "1h7H4jvUZCQLubVE3XCnPehS_nN_8Vf5oPsI9Nearjxk",
-      6: "1lBa8s5xz7L0QUAUyhKSbZqnfiBDwD0unICDF1QAkVDI",
-      7: "1ZtACGJ85b5NQISrFbGp48oc-ksE6GkFx_qEClz3LGrs",
-      8: "1UnsfTc1pxqmkdYerJUW7CA_QEMdON8Jq-BeNijyA7Cg",
-      9: "1-peAZC9FsTKVK-x2owVfB-hYQV4mmi6uLcoS_gvjyDU",
-      10: "1DHrq99gPe7DZtPfApV2Dw2zZuVYNIC_5-Qkv52VkONI",
-      11: "19Z6PN_2eV-T8QnRRSgKr-prLzjFqTT7_lVVc_uy5Bys",
-      12: "12c7Sb5fFixJ1R3OjGJy4mHmfqFhfPVyYSWhdyiye9D4",
-      13: "1H6L7-CXNEKi1dkVzpXqMBwedSWDTwEtgUlVdhM4Quuk",
-      14: "1sQGv-D4m5zuyd8D2LYhuCkmTyHbw9QB0FIL5XJaaK6o",
-      15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
-      16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
-      17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
-      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
-    };
-
-    const container = document.getElementById('stageContainer');
-    const totalStages = 18;
-
-    for (let i = 1; i <= totalStages; i++) {
-      const btn = document.createElement('a');
-      btn.className = 'card-button';
-      btn.href = '#';
-      btn.textContent = `Stage ${i}`;
-
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const loggedIn = localStorage.getItem('loggedIn');
-        const codeword = localStorage.getItem('codeword');
-
-        if (loggedIn !== 'true' || !codeword) {
-          alert('Please login first.');
-          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
-          return;
-        }
-
-        localStorage.setItem('stageNumber', i);
-        localStorage.setItem('sheetId', stageSheetMap[i]);
-
-        window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/Stage1T.html';
-      });
-
-      container.appendChild(btn);
-    }
-  </script>
-
-</div>
 </body>
 </html>
