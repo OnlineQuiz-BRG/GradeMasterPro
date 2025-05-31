@@ -45,8 +45,13 @@
       transition: background-color 0.3s ease;
     }
 
-    .testBtn:hover {
+    .testBtn:hover:enabled {
       background-color: #005f47;
+    }
+
+    .testBtn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
 
     .error {
@@ -84,7 +89,6 @@
   <div id="errorMsg" class="error"></div>
 
   <script>
-    // Redirect if user uses back after logout
     if (performance.navigation.type === 2) {
       localStorage.clear();
       location.href = "loginT.html";
@@ -95,7 +99,6 @@
       return params.get(param);
     }
 
-    // Get values from URL or fallback to localStorage
     const stage = getQueryParam("stage") || localStorage.getItem("stageNumber") || "1";
     const codeword = getQueryParam("codeword") || localStorage.getItem("codeword");
     const studentName = getQueryParam("studentName") || localStorage.getItem("studentName");
@@ -116,7 +119,6 @@
         window.location.href = "loginT.html";
       }, 3000);
     } else {
-      // Save back to localStorage in case user came from URL
       localStorage.setItem("codeword", codeword);
       localStorage.setItem("studentName", studentName);
       localStorage.setItem("stageNumber", stage);
@@ -125,15 +127,27 @@
       stageTitle.textContent = `Stage ${stage} - Dictation Tests`;
 
       const totalTests = 50;
+      const completedKey = `completedTests_${studentName}_Stage${stage}`;
+      const completedTests = JSON.parse(localStorage.getItem(completedKey) || "[]");
+
+      const allCompleted = completedTests.length === totalTests;
+
       for (let i = 1; i <= totalTests; i++) {
         const btn = document.createElement("button");
         btn.className = "testBtn";
         btn.textContent = `Test ${i}`;
+
+        const isCompleted = completedTests.includes(i);
+        if (isCompleted && !allCompleted) {
+          btn.disabled = true;
+        }
+
         btn.addEventListener("click", () => {
-          const url = `dictationT.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
           localStorage.setItem("testNumber", i);
+          const url = `dictationT.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
           window.location.href = url;
         });
+
         container.appendChild(btn);
       }
     }
