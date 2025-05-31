@@ -11,10 +11,40 @@
       color: #003300;
       text-align: center;
       padding: 1rem;
+      margin: 0;
     }
 
-    h1 {
-      margin-bottom: 1rem;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      background-color: #ffe0b3;
+      border-bottom: 2px solid #ffcc80;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .logout-btn, .back-btn {
+      background-color: #cc3300;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background-color: #007b5e;
     }
 
     #startBtn, #submitBtn {
@@ -79,7 +109,14 @@
   </style>
 </head>
 <body>
-  <h1 id="stageInfo">Loading...</h1>
+  <div class="header">
+    <h1 id="stageInfo">Loading...</h1>
+    <div class="btn-group">
+      <button class="back-btn" onclick="goBack()">Back</button>
+      <button class="logout-btn" onclick="confirmLogout()">Logout</button>
+    </div>
+  </div>
+
   <button id="startBtn">Start Test</button>
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   <audio id="bgMusic" src="calm-music.mp3" loop></audio>
@@ -88,6 +125,18 @@
   <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
 
   <script>
+    function confirmLogout() {
+      const confirmExit = confirm("Are you sure you want to logout and return to the main page?");
+      if (confirmExit) {
+        localStorage.clear();
+        window.location.href = "loginT.html";
+      }
+    }
+
+    function goBack() {
+      window.location.href = "Stage1T.html";
+    }
+
     const stageSheetMap = {
       1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
       2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
@@ -160,7 +209,6 @@
 
         startBtn.disabled = false;
 
-        // Disable test button in localStorage
         const disableKey = `disable_stage${stage}_test${test}`;
         localStorage.setItem(disableKey, "true");
 
@@ -175,11 +223,11 @@
           const interval = setInterval(() => {
             if (current >= words.length) {
               clearInterval(interval);
-              wordBox.innerHTML = "";  // Clear all word cards
+              wordBox.innerHTML = "";
               progressEl.textContent = "Test Completed!";
               audioPlayer.style.display = "none";
               bgMusic.pause();
-              submitBtn.style.display = "none"; // Hidden since no result recording
+              submitBtn.style.display = "none";
               return;
             }
 
@@ -189,10 +237,10 @@
             if (previousCard) previousCard.classList.remove("highlight");
             previousCard = wordCard;
 
-            wordBox.prepend(wordCard);  // Add new word on top
+            wordBox.prepend(wordCard);
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 1000); // 1 second per word (adjust if needed)
+          }, 1000);
         });
       })
       .catch(err => {
