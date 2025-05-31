@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Stage 1 - Dictation Tests</title>
+  <title>Dictation Tests</title>
   <style>
     body {
       font-family: 'Baloo 2', cursive;
@@ -44,7 +44,7 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
- 
+
     .testBtn:hover {
       background-color: #005f47;
     }
@@ -77,14 +77,14 @@
 <body>
   <button id="logoutBtn">Logout</button>
 
-  <h1>Stage 1 - Dictation Tests</h1>
+  <h1 id="stageTitle">Stage - Dictation Tests</h1>
   <div id="studentNameDisplay"></div>
   <p>Select a test to begin:</p>
   <div id="buttonContainer"></div>
   <div id="errorMsg" class="error"></div>
 
   <script>
-    // Prevent back navigation to this page after logout
+    // Redirect if user uses back after logout
     if (performance.navigation.type === 2) {
       localStorage.clear();
       location.href = "loginT.html";
@@ -96,17 +96,17 @@
     }
 
     // Get values from URL or fallback to localStorage
-    let codeword = getQueryParam("codeword") || localStorage.getItem("codeword");
-    let studentName = getQueryParam("studentName") || localStorage.getItem("studentName");
+    const stage = getQueryParam("stage") || localStorage.getItem("stageNumber") || "1";
+    const codeword = getQueryParam("codeword") || localStorage.getItem("codeword");
+    const studentName = getQueryParam("studentName") || localStorage.getItem("studentName");
 
     const errorMsg = document.getElementById("errorMsg");
     const container = document.getElementById("buttonContainer");
     const nameDisplay = document.getElementById("studentNameDisplay");
+    const stageTitle = document.getElementById("stageTitle");
 
-    // Logout logic
     document.getElementById("logoutBtn").addEventListener("click", () => {
-      localStorage.removeItem("codeword");
-      localStorage.removeItem("studentName");
+      localStorage.clear();
       window.location.href = "loginT.html";
     });
 
@@ -116,11 +116,13 @@
         window.location.href = "loginT.html";
       }, 3000);
     } else {
+      // Save back to localStorage in case user came from URL
       localStorage.setItem("codeword", codeword);
       localStorage.setItem("studentName", studentName);
-  /*    localStorage.setItem("testNumber", selectedTest);    // e.g., "25"*/
+      localStorage.setItem("stageNumber", stage);
 
       nameDisplay.textContent = `Welcome, ${studentName}!`;
+      stageTitle.textContent = `Stage ${stage} - Dictation Tests`;
 
       const totalTests = 50;
       for (let i = 1; i <= totalTests; i++) {
@@ -128,8 +130,8 @@
         btn.className = "testBtn";
         btn.textContent = `Test ${i}`;
         btn.addEventListener("click", () => {
-          const url = `dictationT.html?stage=1&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
-          localStorage.setItem("testNumber", i); // ✅ FIX: Store correct test number
+          const url = `dictationT.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
+          localStorage.setItem("testNumber", i);
           window.location.href = url;
         });
         container.appendChild(btn);
@@ -138,247 +140,3 @@
   </script>
 </body>
 </html>
-
-
-
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Telugu Dictation Practice</title>
-  <link rel="stylesheet" href="/GradeMasterPro/Telugu/Testing/tStyle.css" />
-  <style>
-    /* Minimal inline styles for layout - adjust or remove if using your external CSS */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 1rem;
-      background: #f9f9f9;
-      color: #222;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-    }
-    .title-card {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .main-title {
-      font-size: 2rem;
-      margin-bottom: 0.25rem;
-    }
-    .subtitle {
-      font-size: 1.1rem;
-      color: #555;
-    }
-    .sub-title {
-      margin: 1.5rem 0 1rem;
-      font-weight: bold;
-      font-size: 1.3rem;
-      text-align: center;
-      color: #333;
-    }
-    .stage-card {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-    .stage-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: center;
-    }
-    .card-button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 0.6rem 1rem;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background-color 0.3s;
-      user-select: none;
-    }
-    .card-button:hover {
-      background-color: #45a049;
-    }
-    #logoutBtn {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.5rem 1rem;
-      background: #f44336;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      user-select: none;
-    }
-    #logoutBtn:hover {
-      background: #d32f2f;
-    }
-  </style>
-</head>
-<body>
-
-  <button id="logoutBtn" title="Logout">Logout</button>
-
-  <script>
-    // Redirect to login page if not logged in
-    if (localStorage.getItem('loggedIn') !== 'true') {
-      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/loginT.html';
-    }
-
-    // Logout button functionality
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('loggedIn');
-      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/loginT.html';
-    });
-
-    // Dynamically generate test buttons 1 to 50
-    function createTestButtons(stage, totalTests) {
-      const container = document.querySelector('.stage-buttons');
-      for (let i = 1; i <= totalTests; i++) {
-        const a = document.createElement('a');
-        a.href = `https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=${stage}&test=${i}`;
-        a.className = 'card-button';
-        a.textContent = `Test ${i}`;
-        container.appendChild(a);
-      }
-    }
-
-    createTestButtons(1, 50);
-  </script>
-
-  <div class="container">
-
-    <!-- Title Card -->
- <!--
-<div class="title-card">
-      <h1 class="main-title">Welcome to Stage - I Dictation Practice</h1>
-      <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
-    </div>
-  
-    <h2 class="sub-title">Practice 2 to 3 Tests daily</h2>
-
-    <!-- Daily Dictation Card -->
-  <!--
-<div class="card stage-card">
-      <h3><strong>Stage - I</strong></h3>
-      <div class="stage-buttons">
-        <!-- Buttons will be generated here by JavaScript -->
- <!--     </div>
-    </div>
-
-  </div>
-  
-</body>
-</html> -->
-
-
-
-<!--
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Telugu Dictation Practice</title>
-  <link rel="stylesheet" href="/GradeMasterPro/Telugu/Testing/tStyle.css" />
-</head>
-<body>
-
-  <button id="logoutBtn" style="position:absolute; top:1rem; right:1rem; padding:0.5rem 1rem;">
-  Logout
-</button>
-  <script>
-  // Guard: if not logged in, drop back to the login page
-  if (localStorage.getItem('loggedIn') !== 'true') {
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/TeluguT.html';
-  }
-
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    // Clear the login flag and send back to login
-    localStorage.removeItem('loggedIn');
-    window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Testing/loginT.html';
-  });
-</script>
-  <div class="container">
-
-    <!-- Title Card -->
-<!--    <div class="title-card">
-      <h1 class="main-title">Welcome to Stage - I Dictation Practice</h1>
-      <p class="subtitle">Spending 20 minutes a day will help you to improve your vocabulary in Telugu</p>
-    </div>
-  
-      <h2 class="sub-title">Practice 2 to 3 Tests daily</h2>
-
-    <!-- Daily Dictation Card -->
-<!--     <div class="card stage-card">
-      <h3><strong>Stage - I</strong></h3>
-      <div class="stage-buttons">
-        
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=1" class="card-button">Test 1</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=2" class="card-button">Test 2</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=3" class="card-button">Test 3</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=4" class="card-button">Test 4</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=5" class="card-button">Test 5</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=6" class="card-button">Test 6</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=7" class="card-button">Test 7</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=8" class="card-button">Test 8</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=9" class="card-button">Test 9</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=10" class="card-button">Test 10</a>
-
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=11" class="card-button">Test 11</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=12" class="card-button">Test 12</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=13" class="card-button">Test 13</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=14" class="card-button">Test 14</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=15" class="card-button">Test 15</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=16" class="card-button">Test 16</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=17" class="card-button">Test 17</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=18" class="card-button">Test 18</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=19" class="card-button">Test 19</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=20" class="card-button">Test 20</a>
-
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=21" class="card-button">Test 21</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=22" class="card-button">Test 22</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=23" class="card-button">Test 23</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=24" class="card-button">Test 24</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=25" class="card-button">Test 25</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=26" class="card-button">Test 26</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=27" class="card-button">Test 27</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=28" class="card-button">Test 28</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=29" class="card-button">Test 29</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=30" class="card-button">Test 30</a>
-
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=31" class="card-button">Test 31</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=32" class="card-button">Test 32</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=33" class="card-button">Test 33</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=34" class="card-button">Test 34</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=35" class="card-button">Test 35</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=36" class="card-button">Test 36</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=37" class="card-button">Test 37</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=38" class="card-button">Test 38</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=39" class="card-button">Test 39</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=40" class="card-button">Test 40</a>
-
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=41" class="card-button">Test 41</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=42" class="card-button">Test 42</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=43" class="card-button">Test 43</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=44" class="card-button">Test 44</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=45" class="card-button">Test 45</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=46" class="card-button">Test 46</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=47" class="card-button">Test 47</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=48" class="card-button">Test 48</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=49" class="card-button">Test 49</a>
-        <a href="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/dictationT.html?stage=1&test=50" class="card-button">Test 50</a>
-      </div>
-    </div>
-
-  </div>
-</body>
-</html> -->
