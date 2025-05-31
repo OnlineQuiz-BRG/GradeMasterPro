@@ -16,19 +16,25 @@
 
     .header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center; /* Center horizontally */
       align-items: center;
       padding: 1rem;
       background-color: #ffe0b3;
       border-bottom: 2px solid #ffcc80;
+      position: relative; /* to position buttons */
     }
 
     .header h1 {
       margin: 0;
       font-size: 1.5rem;
+      text-align: center; /* center text inside h1 */
     }
 
+/* Move button group to top right */
     .btn-group {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
       display: flex;
       gap: 0.5rem;
     }
