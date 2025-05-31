@@ -28,6 +28,15 @@ body {
   box-sizing: border-box;
   /* Removed min-height and flexbox to allow natural height */
 }
+.title-card h1 {
+  margin: 0 0 10px 0;
+  font-size: 1.5rem; /* adjust as needed */
+}
+
+.title-card p {
+  margin: 0;
+  font-size: 1rem;
+}
 
 /* Programme Details Card */
 .card {
