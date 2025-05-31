@@ -106,24 +106,13 @@
       15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
       16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
       17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
-      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs"
     };
 
     const urlParams = new URLSearchParams(window.location.search);
     const stage = parseInt(urlParams.get("stage"), 10);
     const test = parseInt(urlParams.get("test"), 10);
     const codeword = urlParams.get("codeword") || "unknown";
-    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
-
-    const colLetter = (n) => {
-      let c = "";
-      while (n > 0) {
-        let r = (n - 1) % 26;
-        c = String.fromCharCode(65 + r) + c;
-        n = Math.floor((n - 1) / 26);
-      }
-      return c;
-    };
 
     const stageInfoEl = document.getElementById("stageInfo");
 
@@ -133,6 +122,17 @@
     }
 
     const sheetId = stageSheetMap[stage];
+    const colLetter = (n) => {
+      let col = "";
+      while (n > 0) {
+        let rem = (n - 1) % 26;
+        col = String.fromCharCode(65 + rem) + col;
+        n = Math.floor((n - 1) / 26);
+      }
+      return col;
+    };
+
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
     const col = colLetter(test + 1);
     const range = `ODT!${col}1:${col}41`;
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
@@ -160,6 +160,10 @@
         const progressEl = document.getElementById("progress");
 
         startBtn.disabled = false;
+
+        // Disable test button in localStorage
+        const disableKey = `disable_stage${stage}_test${test}`;
+        localStorage.setItem(disableKey, "true");
 
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
@@ -190,17 +194,17 @@
             wordBox.scrollTop = wordBox.scrollHeight;
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 1000);
+          }, 10000); // 10 seconds per word
         });
 
         submitBtn.addEventListener("click", () => {
-          const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
+          // const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
           window.location.href = resultUrl;
         });
       })
       .catch(err => {
         console.error(err);
-        alert("Failed to fetch dictation data.");
+        // alert("Failed to fetch dictation data.");
       });
   </script>
 </body>
