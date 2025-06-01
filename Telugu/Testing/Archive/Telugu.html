@@ -36,13 +36,13 @@
   <script>
     // Redirect if not logged in
     if (localStorage.getItem('loggedIn') !== 'true') {
-      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/login.html';
     }
 
     // Logout action
     document.getElementById('logoutBtn').addEventListener('click', () => {
       localStorage.removeItem('loggedIn');
-      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
+      window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/login.html';
     });
   </script>
 
@@ -109,14 +109,14 @@
 
           if (loggedIn !== 'true' || !codeword) {
             alert('Please login first.');
-            window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/loginT.html';
+            window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/login.html';
             return;
           }
 
           localStorage.setItem('stageNumber', i);
           localStorage.setItem('sheetId', stageSheetMap[i]);
 
-          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/Stage1T.html';
+          window.location.href = 'https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Testing/Archive/Stage.html';
         });
 
         container.appendChild(btn);
