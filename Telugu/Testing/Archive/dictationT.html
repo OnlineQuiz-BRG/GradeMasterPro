@@ -239,6 +239,7 @@
             if (current >= words.length) {
               clearInterval(interval);
               progressEl.textContent = "Test Completed!";
+              wordBox.innerHTML = ""; // Clear wordBox after test
               audioPlayer.style.display = "none";
               bgMusic.pause();
               submitBtn.style.display = "none";
