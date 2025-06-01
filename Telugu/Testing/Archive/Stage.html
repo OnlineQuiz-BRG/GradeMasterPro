@@ -133,17 +133,17 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
       localStorage.clear();
-      window.location.href = "loginT.html";
+      window.location.href = "login.html";
     });
 
     document.getElementById("backBtn").addEventListener("click", () => {
-      window.location.href = "TeluguT.html";
+      window.location.href = "Telugu.html";
     });
 
     if (!codeword || !studentName) {
       errorMsg.textContent = "Codeword or student name missing. Please return to the login page.";
       setTimeout(() => {
-        window.location.href = "loginT.html";
+        window.location.href = "login.html";
       }, 3000);
     } else {
       localStorage.setItem("codeword", codeword);
@@ -168,7 +168,7 @@
 
         btn.addEventListener("click", () => {
           localStorage.setItem("testNumber", i);
-          const url = `dictationT.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
+          const url = `dictation.html?stage=${stage}&test=${i}&codeword=${encodeURIComponent(codeword)}&studentName=${encodeURIComponent(studentName)}`;
           window.location.href = url;
         });
 
