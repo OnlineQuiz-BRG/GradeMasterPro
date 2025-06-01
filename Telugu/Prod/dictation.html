@@ -11,10 +11,58 @@
       color: #003300;
       text-align: center;
       padding: 1rem;
+      margin: 0;
     }
 
-    h1 {
-      margin-bottom: 1rem;
+    .header {
+      position: relative;
+      padding: 1rem 3.5rem 1rem 1rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .btn-group {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      flex-direction: row;
+      gap: 0.5rem;
+    }
+
+    .btn-group button {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 400px) {
+      .header h1 {
+        font-size: 1.2rem;
+      }
+      .btn-group {
+        flex-direction: column;
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+    }
+
+    .logout-btn, .back-btn {
+      background-color: #cc3300;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      background-color: #007b5e;
     }
 
     #startBtn, #submitBtn {
@@ -62,7 +110,8 @@
       font-size: 1.5rem;
       font-weight: bold;
       border-radius: 6px;
-      transition: all 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
     }
 
     .highlight {
@@ -70,18 +119,40 @@
       border-left: 7px solid #ff9900;
       box-shadow: 0 0 10px rgba(255, 153, 0, 0.4);
     }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
-  <h1 id="stageInfo">Loading...</h1>
+  <div class="header">
+    <h1 id="stageInfo">Loading...</h1>
+    <div class="btn-group">
+      <button class="back-btn" onclick="goBack()">Back</button>
+      <button class="logout-btn" onclick="confirmLogout()">Logout</button>
+    </div>
+  </div>
+
   <button id="startBtn">Start Test</button>
   <audio id="audioPlayer" controls controlsList="nodownload"></audio>
   <audio id="bgMusic" src="calm-music.mp3" loop></audio>
   <div id="progress"></div>
   <div id="wordBox"></div>
-<!--   <button id="submitBtn" style="display:none;">Submit Your Test Result</button> -->
+  <button id="submitBtn" style="display:none;">Submit Your Test Result</button>
 
   <script>
+    function confirmLogout() {
+      if (confirm("Are you sure you want to logout and return to the main page?")) {
+        localStorage.clear();
+        window.location.href = "login.html";
+      }
+    }
+
+    function goBack() {
+      window.location.href = "Stage.html";
+    }
+
     const stageSheetMap = {
       1: "1vFDfZu8zQDzpbsPr3xyOLvxImZE-d4NINggaR5TqHvI",
       2: "1GDH-U2aTd4WjrnAaygPHYw3jX_bz5xnm5Dl3PE24Ls8",
@@ -100,25 +171,12 @@
       15: "1fSdX4gHQsIcz6T0ij9Gb5PAkLBc430A8P-xs7zibCMg",
       16: "1UFl_2wb8dmU72nQoICX8TZC9gkda2Sb14nxQ-mKPvOE",
       17: "1cfdonVRjoAj2mgir-QpCuzJyv-jC7-jC7xIk3I80r9c",
-      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs",
+      18: "1nTsd2MpoO4iXbftLAFmW181kUjUC8-xNbtcM1NpF-hs"
     };
 
     const urlParams = new URLSearchParams(window.location.search);
     const stage = parseInt(urlParams.get("stage"), 10);
     const test = parseInt(urlParams.get("test"), 10);
-    const codeword = urlParams.get("codeword") || "unknown";
-    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
-
-    const colLetter = (n) => {
-      let c = "";
-      while (n > 0) {
-        let r = (n - 1) % 26;
-        c = String.fromCharCode(65 + r) + c;
-        n = Math.floor((n - 1) / 26);
-      }
-      return c;
-    };
-
     const stageInfoEl = document.getElementById("stageInfo");
 
     if (!stage || !test || !stageSheetMap[stage]) {
@@ -127,6 +185,17 @@
     }
 
     const sheetId = stageSheetMap[stage];
+    const colLetter = (n) => {
+      let col = "";
+      while (n > 0) {
+        let rem = (n - 1) % 26;
+        col = String.fromCharCode(65 + rem) + col;
+        n = Math.floor((n - 1) / 26);
+      }
+      return col;
+    };
+
+    const apiKey = "AIzaSyCDXXmausuUCUKq7p--HKB1Bnj9ua1v1WU";
     const col = colLetter(test + 1);
     const range = `ODT!${col}1:${col}41`;
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?alt=json&key=${apiKey}`;
@@ -155,9 +224,13 @@
 
         startBtn.disabled = false;
 
+        const disableKey = `disable_stage${stage}_test${test}`;
+        localStorage.setItem(disableKey, "true");
+
         startBtn.addEventListener("click", () => {
           startBtn.style.display = "none";
           bgMusic.play();
+          audioPlayer.play();
 
           let current = 0;
           let previousCard = null;
@@ -169,7 +242,7 @@
               wordBox.innerHTML = ""; // Clear wordBox after test
               audioPlayer.style.display = "none";
               bgMusic.pause();
-              submitBtn.style.display = "inline-block";
+              submitBtn.style.display = "none";
               return;
             }
 
@@ -178,22 +251,17 @@
             wordCard.textContent = `${current + 1}. ${words[current]}`;
 
             if (previousCard) previousCard.classList.remove("highlight");
-            wordBox.prepend(wordCard);
             previousCard = wordCard;
 
+            wordBox.prepend(wordCard);
             progressEl.textContent = `Word ${current + 1} of ${words.length}`;
             current++;
-          }, 10000);
-        });
-
-        submitBtn.addEventListener("click", () => {
-          const resultUrl = `recordResultT.html?codeword=${encodeURIComponent(codeword)}&stage=${stage}&test=${test}`;
-          window.location.href = resultUrl;
+          }, 1000);
         });
       })
       .catch(err => {
-        console.error(err);
-        // alert("Failed to fetch dictation data.");
+        console.error("Fetch error:", err);
+        stageInfoEl.textContent = "Error loading test data.";
       });
   </script>
 </body>
