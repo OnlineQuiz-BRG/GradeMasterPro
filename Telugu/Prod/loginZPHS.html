@@ -105,8 +105,8 @@
 <body>
 
   <div class="login-box">
-    <img src="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Saraswathi.png" alt="Nachiketa Logo" class="logo">
-    <h1>Nachiketa Vidyamandir, Kodgal</h1>
+    <img src="https://onlinequiz-brg.github.io/GradeMasterPro/Telugu/Saraswathi.png" alt="Saraswathi Logo" class="logo">
+    <h1>ZPHS (G), Kalwakurthy</h1>
     <h3>Welcome to Telugu - Daily Dictation Writing Practice</h3>
 
     <input type="text" id="loginCode" placeholder="Enter Code (e.g., NVMK123409)">
@@ -125,8 +125,8 @@
 
     async function handleLogin() {
       const code = document.getElementById("loginCode").value.trim().toUpperCase();
-      if (!/^NVMK\d{6}$/.test(code)) {
-        alert("Invalid code format! Use NVMKXXXXYY");
+      if (!/^GPHS\d{6}$/.test(code)) {
+        alert("Invalid code format! Use ZPHSXXXXYY");
         return;
       }
 
