@@ -1,34 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Payment Page</title>
+  <meta charset="UTF-8" />
+  <title>Donate / Pay Now</title>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    input, button { margin: 8px 0; padding: 10px; width: 100%; max-width: 300px; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e6f2ff, #ccf5ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 80px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      color: #007acc;
+      margin-bottom: 10px;
+    }
+
+    .sub-text {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007acc;
+      color: white;
+      border: none;
+      padding: 14px;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005f99;
+    }
   </style>
 </head>
 <body>
-  <h2>Pay with Razorpay</h2>
-  <input id="name" placeholder="Full Name" required />
-  <input id="email" placeholder="Email" type="email" required />
-  <input id="phone" placeholder="Phone" type="tel" required />
-  <input id="amount" placeholder="Amount (in ₹)" type="number" required />
-  <button onclick="payNow()">Pay Now</button>
+  <div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Logo_Razorpay.svg/2560px-Logo_Razorpay.svg.png" class="logo" alt="Logo" />
+    <h2>Support Our Cause</h2>
+    <div class="sub-text">Enter your details and amount to proceed with payment</div>
+
+    <input id="name" placeholder="Full Name" required />
+    <input id="email" placeholder="Email Address" type="email" required />
+    <input id="phone" placeholder="Mobile Number" type="tel" required />
+    <input id="amount" placeholder="Amount (in ₹)" type="number" required />
+    
+    <button onclick="payNow()">Pay Now</button>
+  </div>
 
   <script>
     function payNow() {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const phone = document.getElementById("phone").value;
-      const amount = parseInt(document.getElementById("amount").value) * 100;
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const amountVal = parseInt(document.getElementById("amount").value.trim());
+
+      if (!name || !email || !phone || !amountVal || amountVal <= 0) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      const amount = amountVal * 100;
 
       const options = {
         "key": "rzp_test_WJNE2f0kKX7AzL", // Replace with your Razorpay Key ID
         "amount": amount,
         "currency": "INR",
-        "name": "Test Payment",
-        "description": "Demo Transaction",
+        "name": "Sacchidananda Gurukulam",
+        "description": "Donation / Support Payment",
         "handler": function (response) {
           // Send data to Google Apps Script Web App
           fetch("https://script.google.com/macros/s/AKfycbw68ZRecIgUCjno0YAhMFRSOVGjb0j2dSgBq9KW_fjUSoHQm_Eb2U7K5lpKXyOtYSRhCw/exec", {
@@ -41,10 +114,12 @@
             })
           })
           .then(res => res.text())
-          .then(data => alert("Payment successful! " + data));
+          .then(data => {
+            alert("✅ Payment successful!\nReference ID: " + response.razorpay_payment_id);
+          });
         },
         "prefill": { name, email, contact: phone },
-        "theme": { "color": "#3399cc" }
+        "theme": { "color": "#007acc" }
       };
 
       const rzp = new Razorpay(options);
