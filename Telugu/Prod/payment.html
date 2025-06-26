@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Page</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, button { margin: 8px 0; padding: 10px; width: 100%; max-width: 300px; }
+  </style>
+</head>
+<body>
+  <h2>Pay with Razorpay</h2>
+  <input id="name" placeholder="Full Name" required />
+  <input id="email" placeholder="Email" type="email" required />
+  <input id="phone" placeholder="Phone" type="tel" required />
+  <input id="amount" placeholder="Amount (in ₹)" type="number" required />
+  <button onclick="payNow()">Pay Now</button>
+
+  <script>
+    function payNow() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const amount = parseInt(document.getElementById("amount").value) * 100;
+
+      const options = {
+        "key": "YOUR_RAZORPAY_KEY_ID", // Replace with your Razorpay Key ID
+        "amount": amount,
+        "currency": "INR",
+        "name": "Test Payment",
+        "description": "Demo Transaction",
+        "handler": function (response) {
+          // Send data to Google Apps Script Web App
+          fetch("https://script.google.com/macros/s/AKfycbw68ZRecIgUCjno0YAhMFRSOVGjb0j2dSgBq9KW_fjUSoHQm_Eb2U7K5lpKXyOtYSRhCw/exec", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name, email, phone,
+              amount: amount / 100,
+              payment_id: response.razorpay_payment_id
+            })
+          })
+          .then(res => res.text())
+          .then(data => alert("Payment successful! " + data));
+        },
+        "prefill": { name, email, contact: phone },
+        "theme": { "color": "#3399cc" }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+</body>
+</html>
