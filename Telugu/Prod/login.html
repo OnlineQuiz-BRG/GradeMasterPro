@@ -109,7 +109,7 @@
     <h1>జిజ్ఞాస concept learning</h1>
     <h3>Welcome to Telugu - Daily Dictation Writing Practice</h3>
 
-    <input type="text" id="loginCode" placeholder="Enter Code (e.g., NVMK123409)">
+    <input type="text" id="loginCode" placeholder="Enter Code (e.g., SGRJ123409)">
     <br>
     <button class="login-button" onclick="handleLogin()">Login</button>
   </div>
@@ -125,7 +125,7 @@
 
     async function handleLogin() {
       const code = document.getElementById("loginCode").value.trim().toUpperCase();
-      if (!/^NVMK\d{6}$/.test(code)) {
+      if (!/^SGRJ\d{6}$/.test(code)) {
         alert("Invalid code format! Use NVMKXXXXYY");
         return;
       }
